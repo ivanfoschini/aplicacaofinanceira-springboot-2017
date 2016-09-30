@@ -1,5 +1,6 @@
 package aplicacaofinanceira.exception;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +20,9 @@ public class DefaultExceptionAttributes implements ExceptionAttributes {
     public Map<String, Object> getExceptionAttributes(String message, Exception exception, HttpServletRequest httpRequest, HttpStatus httpStatus) {
         Map<String, Object> exceptionAttributes = new LinkedHashMap<String, Object>();
 
-        exceptionAttributes.put(TIMESTAMP, new Date());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        
+        exceptionAttributes.put(TIMESTAMP, formatter.format(new Date()));
         addHttpStatus(exceptionAttributes, httpStatus);
         addExceptionDetail(exceptionAttributes, message, exception);
         addPath(exceptionAttributes, httpRequest);

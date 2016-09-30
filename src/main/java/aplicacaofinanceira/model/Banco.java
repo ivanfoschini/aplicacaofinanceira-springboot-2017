@@ -36,7 +36,6 @@ public class Banco implements Serializable {
     private String cnpj;
     
     @NotNull(message = "{bancoNomeNaoPodeSerNulo}")
-    @Size(min = 1, max = 255, message = "{bancoNomeDeveTerEntreUmEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome")
     private String nome;
 

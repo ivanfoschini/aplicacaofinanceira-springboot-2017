@@ -27,11 +27,11 @@ public class BancoController extends BaseController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createBanco(@RequestBody @Valid Banco banco, BindingResult bindingResult) {        
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<Object>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);  
+            return new ResponseEntity<>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);  
         } else {
             Banco savedBanco = bancoService.insert(banco);        
         
-            return new ResponseEntity<Object>(savedBanco, HttpStatus.CREATED);    
+            return new ResponseEntity<>(savedBanco, HttpStatus.CREATED);    
         }
     }
 }

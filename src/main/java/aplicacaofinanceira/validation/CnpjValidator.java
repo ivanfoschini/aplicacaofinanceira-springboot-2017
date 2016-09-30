@@ -10,7 +10,7 @@ public class CnpjValidator implements ConstraintValidator<Cnpj, String> {
 
     @Override
     public boolean isValid(String cnpj, ConstraintValidatorContext context) {
-        if (cnpj.length() != 14) {
+        if (cnpj == null || cnpj.length() != 14) {
             return false;
         }
 
