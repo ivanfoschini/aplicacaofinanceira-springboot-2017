@@ -2,7 +2,7 @@ package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.service.BancoService;
-import aplicacaofinanceira.util.ValidationUtil;
+import aplicacaofinanceira.validation.ValidationUtil;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

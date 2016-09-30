@@ -1,4 +1,4 @@
-package aplicacaofinanceira.util;
+package aplicacaofinanceira.validation;
 
 import java.util.List;
 import org.json.JSONArray;

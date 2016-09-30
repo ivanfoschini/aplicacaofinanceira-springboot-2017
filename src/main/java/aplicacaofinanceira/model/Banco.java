@@ -1,5 +1,6 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.validation.Cnpj;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +31,7 @@ public class Banco implements Serializable {
     private Integer numero;
     
     @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
-    //Incluir validador de CNPJ        
+    @Cnpj
     @Column(name = "cnpj")    
     private String cnpj;
     
