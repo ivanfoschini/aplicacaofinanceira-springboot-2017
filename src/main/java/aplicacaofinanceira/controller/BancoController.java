@@ -2,10 +2,13 @@ package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.service.BancoService;
+import aplicacaofinanceira.util.ValidationUtil;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +25,13 @@ public class BancoController extends BaseController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Banco> createBanco(@RequestBody Banco banco) {
-        Banco savedBanco = bancoService.insert(banco);
-
-        return new ResponseEntity<Banco>(savedBanco, HttpStatus.CREATED);
+    public ResponseEntity<Object> createBanco(@RequestBody @Valid Banco banco, BindingResult bindingResult) {        
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<Object>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);  
+        } else {
+            Banco savedBanco = bancoService.insert(banco);        
+        
+            return new ResponseEntity<Object>(savedBanco, HttpStatus.CREATED);    
+        }
     }
 }

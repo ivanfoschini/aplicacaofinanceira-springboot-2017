@@ -24,19 +24,18 @@ public class Banco implements Serializable {
     @Column(name = "banco_id")
     private Long id;
     
-    @NotNull(message = "{dataNaoPodeSerNula}")
-    @Min(value = 1, message = "{quantidadeMinNaoPodeSerAbaixoDeDezUnidades}")
+    @NotNull(message = "{bancoNumeroNaoPodeSerNulo}")
+    @Min(value = 1, message = "{bancoNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero")
     private Integer numero;
     
-    @NotNull(message = "{dataNaoPodeSerNula}")
-    @Size(min = 14, max = 14)
+    @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
     //Incluir validador de CNPJ        
     @Column(name = "cnpj")    
     private String cnpj;
     
-    @NotNull(message = "{dataNaoPodeSerNula}")
-    @Size(min = 1, max = 255)
+    @NotNull(message = "{bancoNomeNaoPodeSerNulo}")
+    @Size(min = 1, max = 255, message = "{bancoNomeDeveTerEntreUmEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome")
     private String nome;
 

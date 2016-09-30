@@ -35,6 +35,13 @@
             <version>9.4-1200-jdbc4</version>
         </dependency>
         
+        <!-- Dependency for JSON library -->        
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+        </dependency>
+        
     </dependencies>
 
     <build>
