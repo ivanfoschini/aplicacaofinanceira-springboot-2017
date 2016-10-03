@@ -11,6 +11,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "banco")
@@ -35,6 +36,7 @@ public class Banco implements Serializable {
     private String cnpj;
     
     @NotNull(message = "{bancoNomeNaoPodeSerNulo}")
+    @Size(min = 2, max = 255, message = "{bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome")
     private String nome;
 

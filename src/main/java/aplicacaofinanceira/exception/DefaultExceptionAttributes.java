@@ -9,12 +9,12 @@ import org.springframework.http.HttpStatus;
 
 public class DefaultExceptionAttributes implements ExceptionAttributes {
 
-    public static final String TIMESTAMP = "timestamp";
-    public static final String STATUS = "status";
-    public static final String ERROR = "error";
     public static final String EXCEPTION = "exception";
     public static final String MESSAGE = "message";
     public static final String PATH = "path";
+    public static final String REASON = "reason";        
+    public static final String STATUS = "status";
+    public static final String TIMESTAMP = "timestamp";
 
     @Override
     public Map<String, Object> getExceptionAttributes(String message, Exception exception, HttpServletRequest httpRequest, HttpStatus httpStatus) {
@@ -32,7 +32,7 @@ public class DefaultExceptionAttributes implements ExceptionAttributes {
 
     private void addHttpStatus(Map<String, Object> exceptionAttributes, HttpStatus httpStatus) {
         exceptionAttributes.put(STATUS, httpStatus.value());
-        exceptionAttributes.put(ERROR, httpStatus.getReasonPhrase());
+        exceptionAttributes.put(REASON, httpStatus.getReasonPhrase());
     }
 
     private void addExceptionDetail(Map<String, Object> exceptionAttributes, String message, Exception exception) {

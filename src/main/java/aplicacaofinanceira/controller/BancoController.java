@@ -66,6 +66,10 @@ public class BancoController extends BaseController {
         } else {
             Banco savedBanco = bancoService.insert(banco);
 
+            if (savedBanco == null) {
+                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            
             return new ResponseEntity<>(savedBanco, HttpStatus.CREATED);
         }
     }
@@ -82,7 +86,7 @@ public class BancoController extends BaseController {
             Banco updatedBanco = bancoService.update(id, banco);
             
             if (updatedBanco == null) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             return new ResponseEntity<>(updatedBanco, HttpStatus.OK);    
