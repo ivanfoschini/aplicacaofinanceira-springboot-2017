@@ -13,5 +13,5 @@ public interface BancoService {
     
     Banco insert(Banco banco);        
     
-    Banco update(Banco banco);
+    Banco update(Long id, Banco banco);
 }

@@ -49,8 +49,8 @@ public class BancoServiceImpl implements BancoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Banco update(Banco banco) {
-        Banco bancoToUpdate = findById(banco.getId());
+    public Banco update(Long id, Banco banco) {
+        Banco bancoToUpdate = findById(id);
         
         if (bancoToUpdate == null) {
             return null;
@@ -59,6 +59,7 @@ public class BancoServiceImpl implements BancoService {
         bancoToUpdate.setNumero(banco.getNumero());
         bancoToUpdate.setCnpj(banco.getCnpj());
         bancoToUpdate.setNome(banco.getNome());
+        
         Banco updatedBanco = bancoRepository.save(bancoToUpdate);
 
         return updatedBanco;

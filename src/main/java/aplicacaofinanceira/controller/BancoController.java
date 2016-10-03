@@ -69,4 +69,23 @@ public class BancoController extends BaseController {
             return new ResponseEntity<>(savedBanco, HttpStatus.CREATED);
         }
     }
+    
+    @RequestMapping(
+            value = "/api/bancos/{id}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateBanco(@PathVariable("id") Long id, @RequestBody @Valid Banco banco, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);
+        } else {
+            Banco updatedBanco = bancoService.update(id, banco);
+            
+            if (updatedBanco == null) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return new ResponseEntity<>(updatedBanco, HttpStatus.OK);    
+        }        
+    }
 }
