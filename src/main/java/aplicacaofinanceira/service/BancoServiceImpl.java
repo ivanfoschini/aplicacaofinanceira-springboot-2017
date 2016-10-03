@@ -4,6 +4,7 @@ import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class BancoServiceImpl implements BancoService {
 
     @Override
     public Collection<Banco> findAll() {
-        Collection<Banco> bancos = bancoRepository.findAll();
+        Collection<Banco> bancos = bancoRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
 
         return bancos;
     }
