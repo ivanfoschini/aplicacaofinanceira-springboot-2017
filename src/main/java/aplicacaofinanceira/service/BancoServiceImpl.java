@@ -3,7 +3,9 @@ package aplicacaofinanceira.service;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import java.util.Collection;
+import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +18,9 @@ public class BancoServiceImpl implements BancoService {
     @Autowired
     private BancoRepository bancoRepository;
     
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void delete(Long id) {
@@ -30,7 +35,7 @@ public class BancoServiceImpl implements BancoService {
     }
 
     @Override
-    public Banco findById(Long id) {
+    public Banco findOne(Long id) {
         Banco banco = bancoRepository.findOne(id);
 
         return banco;
@@ -51,18 +56,18 @@ public class BancoServiceImpl implements BancoService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Banco update(Long id, Banco banco) {
-        Banco bancoToUpdate = findById(id);
-        
+        Banco bancoToUpdate = findOne(id);
+
         if (bancoToUpdate == null) {
-            return null;
+            throw new NoResultException(messageSource.getMessage("bancoNotFoundError", null, null));
         }
 
         bancoToUpdate.setNumero(banco.getNumero());
         bancoToUpdate.setCnpj(banco.getCnpj());
         bancoToUpdate.setNome(banco.getNome());
-        
+
         Banco updatedBanco = bancoRepository.save(bancoToUpdate);
 
         return updatedBanco;
-    }    
+    }
 }

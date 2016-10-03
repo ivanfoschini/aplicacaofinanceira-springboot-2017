@@ -9,7 +9,7 @@ public interface BancoService {
     
     Collection<Banco> findAll();
 
-    Banco findById(Long id);    
+    Banco findOne(Long id);    
     
     Banco insert(Banco banco);        
     
