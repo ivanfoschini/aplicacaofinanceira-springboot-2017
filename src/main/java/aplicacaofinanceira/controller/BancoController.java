@@ -26,6 +26,12 @@ public class BancoController extends BaseController {
             value = "/api/bancos/{id}",
             method = RequestMethod.DELETE)
     public ResponseEntity<Banco> delete(@PathVariable("id") Long id) {
+        Banco banco = bancoService.findById(id);
+
+        if (banco == null) {
+            return new ResponseEntity<Banco>(HttpStatus.NOT_FOUND);
+        }
+        
         bancoService.delete(id);
 
         return new ResponseEntity<Banco>(HttpStatus.NO_CONTENT);
