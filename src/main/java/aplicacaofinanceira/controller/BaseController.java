@@ -1,14 +1,14 @@
 package aplicacaofinanceira.controller;
 
-import aplicacaofinanceira.exception.CampoUniqueException;
 import aplicacaofinanceira.exception.DefaultExceptionAttributes;
 import aplicacaofinanceira.exception.ExceptionAttributes;
 import aplicacaofinanceira.exception.NotFoundException;
+import aplicacaofinanceira.exception.NotUniqueException;
+import aplicacaofinanceira.exception.ValidationException;
+import aplicacaofinanceira.validation.ValidationUtil;
 import java.util.Map;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -21,81 +21,57 @@ public class BaseController {
     @Autowired
     private MessageSource messageSource;
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @ExceptionHandler(CampoUniqueException.class)
-    public ResponseEntity<Map<String, Object>> handleCampoUniqueException(Exception exception, HttpServletRequest request) {
-        logExceptionStart(exception);
-
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.BAD_REQUEST);
-
-        logExceptionEnd();
-
-        return new ResponseEntity<Map<String, Object>>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    
-    @ExceptionHandler(NoResultException.class)
-    public ResponseEntity<Map<String, Object>> handleNoResultException(Exception exception, HttpServletRequest request) {
-        logExceptionStart(exception);
-
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.BAD_REQUEST);
-
-        logExceptionEnd();
-
-        return new ResponseEntity<Map<String, Object>>(responseBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFoundException(Exception exception, HttpServletRequest request) {
-        logExceptionStart(exception);
-
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.BAD_REQUEST);
-
-        logExceptionEnd();
-
-        return new ResponseEntity<Map<String, Object>>(responseBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(Exception exception, HttpServletRequest request) {
-        logExceptionStart(exception);
-
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
-
-        logExceptionEnd();
-
-        return new ResponseEntity<Map<String, Object>>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception exception, HttpServletRequest request) {
-        logExceptionStart(exception);
-
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
 
         Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalInternalServerError", null, null), exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        logExceptionEnd();
-        
-        return new ResponseEntity<Map<String, Object>>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
 
-    protected void logExceptionStart(Exception exception) {
-        logger.error("====================");
-        logger.error("Exception start.");
-        logger.error("Exception: ", exception);
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(NoResultException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResultException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
 
-    protected void logExceptionEnd() {
-        logger.error("Exception end.");
-        logger.error("====================");
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }    
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }    
+    
+    @ExceptionHandler(NotUniqueException.class)
+    public ResponseEntity<Map<String, Object>> handleCampoUniqueException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(ValidationUtil.errorsList, exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

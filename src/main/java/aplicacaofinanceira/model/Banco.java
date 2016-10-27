@@ -31,7 +31,7 @@ public class Banco implements Serializable {
     private Integer numero;
     
     @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
-    @Cnpj
+    @Cnpj(message = "{bancoCnpjInvalido}")
     @Column(name = "cnpj")    
     private String cnpj;
     

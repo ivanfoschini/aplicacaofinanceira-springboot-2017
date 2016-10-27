@@ -1,15 +1,14 @@
 package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.exception.NotFoundException;
-import aplicacaofinanceira.exception.CampoUniqueException;
+import aplicacaofinanceira.exception.NotUniqueException;
+import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.service.BancoService;
 import aplicacaofinanceira.validation.ValidationUtil;
 import java.util.Collection;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +25,13 @@ public class BancoController extends BaseController {
     @Autowired
     private BancoService bancoService;
 
-    @Autowired
-    private MessageSource messageSource;
-
     @RequestMapping(
             value = "/api/bancos/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Banco> delete(@PathVariable("id") Long id) throws Exception {
-        Banco banco = bancoService.findOne(id);
-
-        if (banco == null) {
-            throw new NotFoundException(messageSource.getMessage("bancoNotFoundError", null, null));
-        }
-
+    public ResponseEntity<Banco> delete(@PathVariable("id") Long id) throws NotFoundException {
         bancoService.delete(id);
 
-        return new ResponseEntity<Banco>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(
@@ -51,21 +41,17 @@ public class BancoController extends BaseController {
     public ResponseEntity<Collection<Banco>> findAll() {
         Collection<Banco> bancos = bancoService.findAll();
 
-        return new ResponseEntity<Collection<Banco>>(bancos, HttpStatus.OK);
+        return new ResponseEntity<>(bancos, HttpStatus.OK);
     }
 
     @RequestMapping(
             value = "/api/bancos/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Banco> findOne(@PathVariable("id") Long id) throws Exception {        
+    public ResponseEntity<Banco> findOne(@PathVariable("id") Long id) throws NotFoundException {        
         Banco banco = bancoService.findOne(id);
 
-        if (banco == null) {
-            throw new NotFoundException(messageSource.getMessage("bancoNotFoundError", null, null));
-        }
-
-        return new ResponseEntity<Banco>(banco, HttpStatus.OK);        
+        return new ResponseEntity<>(banco, HttpStatus.OK);        
     }
 
     @RequestMapping(
@@ -73,21 +59,15 @@ public class BancoController extends BaseController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> insert(@RequestBody @Valid Banco banco, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<Object> insert(@RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);
-        } else {
-            try {
+            ValidationUtil.handleValidationErrors(bindingResult);
+            
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        } else {            
             Banco savedBanco = bancoService.insert(banco);
 
-                if (savedBanco == null) {
-                    return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-                }
-
-                return new ResponseEntity<>(savedBanco, HttpStatus.CREATED);
-            } catch (DataIntegrityViolationException e) {
-                throw new CampoUniqueException(messageSource.getMessage("bancoUniqueError", null, null));
-            }
+            return new ResponseEntity<>(savedBanco, HttpStatus.CREATED);            
         }
     }
 
@@ -96,21 +76,15 @@ public class BancoController extends BaseController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Banco banco, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(ValidationUtil.getBeanValidationErrors(bindingResult), HttpStatus.UNPROCESSABLE_ENTITY);
+            ValidationUtil.handleValidationErrors(bindingResult);
+            
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
-            try {
-                Banco updatedBanco = bancoService.update(id, banco);
+            Banco updatedBanco = bancoService.update(id, banco);
 
-                if (updatedBanco == null) {
-                    throw new NotFoundException(messageSource.getMessage("bancoNotFoundError", null, null));
-                }
-                
-                return new ResponseEntity<>(updatedBanco, HttpStatus.OK);
-            } catch (DataIntegrityViolationException e) {
-                throw new CampoUniqueException(messageSource.getMessage("bancoUniqueError", null, null));
-            }
+            return new ResponseEntity<>(updatedBanco, HttpStatus.OK);
         }
     }
 }
