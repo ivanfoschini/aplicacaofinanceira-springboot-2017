@@ -22,22 +22,22 @@ public class Banco implements Serializable {
     @Id
     @SequenceGenerator(name = "Banco_Generator", sequenceName = "banco_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Banco_Generator")
-    @Column(name = "banco_id")
+    @Column(name = "banco_id", nullable = false)
     private Long id;
     
     @NotNull(message = "{bancoNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{bancoNumeroDeveSerMaiorDoQueZero}")
-    @Column(name = "numero")
+    @Column(name = "numero", nullable = false)
     private Integer numero;
     
     @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
     @Cnpj(message = "{bancoCnpjInvalido}")
-    @Column(name = "cnpj")    
+    @Column(name = "cnpj", nullable = false, length = 14)    
     private String cnpj;
     
     @NotNull(message = "{bancoNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false, length = 255)
     private String nome;
 
     public Banco() {}
