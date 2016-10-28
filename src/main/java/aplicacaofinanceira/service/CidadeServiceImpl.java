@@ -1,6 +1,7 @@
 package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.NotFoundException;
+import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.repository.CidadeRepository;
 import java.util.Collection;
@@ -18,7 +19,7 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Autowired
     private CidadeRepository cidadeRepository;
-    
+
     @Autowired
     private MessageSource messageSource;
 
@@ -28,33 +29,37 @@ public class CidadeServiceImpl implements CidadeService {
         Cidade cidade = cidadeRepository.findOne(id);
 
         if (cidade == null) {
-            throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrado", null, null));
+            throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
         }
-        
+
         cidadeRepository.delete(id);
     }
 
     @Override
     public Collection<Cidade> findAll() {
         return cidadeRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
-    }    
+    }
 
     @Override
     public Cidade findOne(Long id) throws NotFoundException {
         Cidade cidade = cidadeRepository.findOne(id);
 
         if (cidade == null) {
-            throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrado", null, null));
-        }        
-        
+            throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
+        }
+
         return cidade;
     }
-    
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Cidade insert(Cidade cidade) {
+    public Cidade insert(Cidade cidade) throws NotUniqueException {
+        if (!isNomeUniqueForEstado(cidade.getNome(), cidade.getEstado().getId())) {
+            throw new NotUniqueException(messageSource.getMessage("cidadeNomeDeveSerUnicoParaEstado", null, null));
+        }
+
         Cidade savedCidade = cidadeRepository.save(cidade);
-        
+
         return savedCidade;
     }
 
@@ -64,11 +69,17 @@ public class CidadeServiceImpl implements CidadeService {
         Cidade cidadeToUpdate = findOne(id);
 
         if (cidadeToUpdate == null) {
-            throw new NoResultException(messageSource.getMessage("cidadeNaoEncontrado", null, null));
+            throw new NoResultException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
         }
-        
+
         cidadeToUpdate.setNome(cidade.getNome());
 
         return cidadeRepository.save(cidadeToUpdate);
+    }
+
+    private boolean isNomeUniqueForEstado(String nomeDaCidade, Long idDoEstado) {        
+        Cidade cidade = cidadeRepository.findByNomeAndEstado(nomeDaCidade, idDoEstado);
+
+        return cidade != null ? false : true;        
     }
 }

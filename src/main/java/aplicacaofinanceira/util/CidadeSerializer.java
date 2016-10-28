@@ -23,14 +23,14 @@ public class CidadeSerializer extends StdSerializer<Cidade> {
     @Override
     public void serialize(Cidade value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {        
         jgen.writeStartObject();
-        jgen.writeNumberField("cidadeId", value.getId());
-        jgen.writeStringField("cidadeNome", value.getNome());
-        jgen.writeNumberField("estadoId", value.getEstado().getId());
-        jgen.writeStringField("estadoNome", value.getEstado().getNome());
+        jgen.writeNumberField(Constants.CIDADE_ID, value.getId());
+        jgen.writeStringField(Constants.CIDADE_NOME, value.getNome());
+        jgen.writeNumberField(Constants.ESTADO_ID, value.getEstado().getId());
+        jgen.writeStringField(Constants.ESTADO_NOME, value.getEstado().getNome());
         jgen.writeEndObject();
     }    
     
-    public static String serialize(Cidade cidade, Estado estado) throws JsonProcessingException {
+    public static String serializeWithEstado(Cidade cidade, Estado estado) throws JsonProcessingException {
         cidade.getEstado().setNome(estado.getNome());
         
         ObjectMapper mapper = new ObjectMapper();

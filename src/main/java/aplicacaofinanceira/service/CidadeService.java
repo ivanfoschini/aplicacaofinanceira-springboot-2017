@@ -1,6 +1,7 @@
 package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.NotFoundException;
+import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
 import java.util.Collection;
 
@@ -12,7 +13,7 @@ public interface CidadeService {
 
     Cidade findOne(Long id) throws NotFoundException;    
     
-    Cidade insert(Cidade cidade);        
+    Cidade insert(Cidade cidade) throws NotUniqueException;        
     
     Cidade update(Long id, Cidade cidade) throws NotFoundException;
 }

@@ -76,7 +76,7 @@ public class CidadeController extends BaseController {
 
             Estado estado = estadoService.findOne(savedCidade.getEstado().getId());
                         
-            return new ResponseEntity<>(CidadeSerializer.serialize(savedCidade, estado), HttpStatus.CREATED);            
+            return new ResponseEntity<>(CidadeSerializer.serializeWithEstado(savedCidade, estado), HttpStatus.CREATED);            
         }
     }
 
