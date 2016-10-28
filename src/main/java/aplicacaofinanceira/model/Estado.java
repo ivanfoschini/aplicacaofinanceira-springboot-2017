@@ -20,12 +20,12 @@ public class Estado implements Serializable {
     @Id
     @SequenceGenerator(name = "Estado_Generator", sequenceName = "estado_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Estado_Generator")
-    @Column(name = "estado_id")
+    @Column(name = "estado_id", nullable = false)
     private Long id;
     
     @NotNull(message = "{estadoNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false, length = 255)
     private String nome;
 
     public Estado() {}
