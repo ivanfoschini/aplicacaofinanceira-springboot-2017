@@ -4,7 +4,7 @@ import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.EstadoRepository;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -36,7 +36,7 @@ public class EstadoServiceImpl implements EstadoService {
     }
 
     @Override
-    public Collection<Estado> findAll() {
+    public List<Estado> findAll() {
         return estadoRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
     }    
 
