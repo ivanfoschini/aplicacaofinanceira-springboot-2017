@@ -64,7 +64,7 @@ public class EstadoController extends BaseController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(EstadoViews.EstadoSimple.class)
-    public ResponseEntity<Object> insert(@RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
+    public ResponseEntity<Estado> insert(@RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
@@ -82,7 +82,7 @@ public class EstadoController extends BaseController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(EstadoViews.EstadoSimple.class)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
+    public ResponseEntity<Estado> update(@PathVariable("id") Long id, @RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
