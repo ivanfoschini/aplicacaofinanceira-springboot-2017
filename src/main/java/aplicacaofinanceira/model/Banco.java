@@ -1,6 +1,8 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.BancoViews;
 import aplicacaofinanceira.validation.Cnpj;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,21 +25,25 @@ public class Banco implements Serializable {
     @SequenceGenerator(name = "Banco_Generator", sequenceName = "banco_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Banco_Generator")
     @Column(name = "banco_id", nullable = false)
+    @JsonView(BancoViews.BancoSimple.class)
     private Long id;
     
     @NotNull(message = "{bancoNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{bancoNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
+    @JsonView(BancoViews.BancoSimple.class)
     private Integer numero;
     
     @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
     @Cnpj(message = "{bancoCnpjInvalido}")
     @Column(name = "cnpj", nullable = false, length = 14)    
+    @JsonView(BancoViews.BancoSimple.class)
     private String cnpj;
     
     @NotNull(message = "{bancoNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
+    @JsonView(BancoViews.BancoSimple.class)
     private String nome;
 
     public Banco() {}

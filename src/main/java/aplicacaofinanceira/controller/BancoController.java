@@ -5,7 +5,9 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.service.BancoService;
+import aplicacaofinanceira.util.BancoViews;
 import aplicacaofinanceira.validation.ValidationUtil;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Collection;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class BancoController extends BaseController {
     @RequestMapping(
             value = "/api/bancos/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Banco> delete(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
         bancoService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -38,6 +40,7 @@ public class BancoController extends BaseController {
             value = "/api/bancos",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(BancoViews.BancoSimple.class)
     public ResponseEntity<Collection<Banco>> findAll() {
         Collection<Banco> bancos = bancoService.findAll();
 
@@ -48,6 +51,7 @@ public class BancoController extends BaseController {
             value = "/api/bancos/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(BancoViews.BancoSimple.class)
     public ResponseEntity<Banco> findOne(@PathVariable("id") Long id) throws NotFoundException {        
         Banco banco = bancoService.findOne(id);
 
@@ -59,7 +63,8 @@ public class BancoController extends BaseController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> insert(@RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
+    @JsonView(BancoViews.BancoSimple.class)
+    public ResponseEntity<Banco> insert(@RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
@@ -76,7 +81,8 @@ public class BancoController extends BaseController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
+    @JsonView(BancoViews.BancoSimple.class)
+    public ResponseEntity<Banco> update(@PathVariable("id") Long id, @RequestBody @Valid Banco banco, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
