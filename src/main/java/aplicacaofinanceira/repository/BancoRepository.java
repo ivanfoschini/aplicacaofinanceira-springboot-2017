@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BancoRepository extends JpaRepository<Banco, Long> {
     
-    @Query("select banco from Banco banco where banco.numero =:numero")
+    @Query("select banco from Banco banco where banco.numero = :numero")
     Banco findByNumero(@Param("numero") Integer numero);
     
-    @Query("select banco from Banco banco where banco.numero =:numero and banco.id <>:id")
+    @Query("select banco from Banco banco where banco.numero = :numero and banco.id <> :id")
     Banco findByNumeroAndDifferentId(@Param("numero") Integer numero, @Param("id") Long id);
 }

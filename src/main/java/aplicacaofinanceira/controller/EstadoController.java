@@ -9,7 +9,7 @@ import aplicacaofinanceira.service.EstadoService;
 import aplicacaofinanceira.util.EstadoViews;
 import aplicacaofinanceira.validation.ValidationUtil;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Collection;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,8 +42,8 @@ public class EstadoController extends BaseController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(EstadoViews.EstadoSimple.class)
-    public ResponseEntity<Collection<Estado>> findAll() {
-        Collection<Estado> estados = estadoService.findAll();
+    public ResponseEntity<List<Estado>> findAll() {
+        List<Estado> estados = estadoService.findAll();
 
         return new ResponseEntity<>(estados, HttpStatus.OK);
     }

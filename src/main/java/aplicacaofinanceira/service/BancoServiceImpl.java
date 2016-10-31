@@ -4,7 +4,7 @@ import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -36,7 +36,7 @@ public class BancoServiceImpl implements BancoService {
     }
 
     @Override
-    public Collection<Banco> findAll() {
+    public List<Banco> findAll() {
         return bancoRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
     }    
 

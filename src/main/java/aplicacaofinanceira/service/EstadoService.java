@@ -4,13 +4,13 @@ import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Estado;
-import java.util.Collection;
+import java.util.List;
 
 public interface EstadoService {
     
     void delete(Long id) throws NotEmptyCollectionException, NotFoundException;    
     
-    Collection<Estado> findAll();
+    List<Estado> findAll();
 
     Estado findOne(Long id) throws NotFoundException;    
     
