@@ -7,8 +7,10 @@ import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.service.CidadeService;
 import aplicacaofinanceira.service.EstadoService;
-import aplicacaofinanceira.util.CidadeSerializer;
+import aplicacaofinanceira.util.CidadeViews;
+import aplicacaofinanceira.util.CidadeWithEstadoSerializer;
 import aplicacaofinanceira.validation.ValidationUtil;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Collection;
 import javax.validation.Valid;
@@ -35,7 +37,7 @@ public class CidadeController extends BaseController {
     @RequestMapping(
             value = "/api/cidades/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Cidade> delete(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
         cidadeService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -45,7 +47,8 @@ public class CidadeController extends BaseController {
             value = "/api/cidades",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Cidade>> findAll() {
+    @JsonView(CidadeViews.CidadeSimple.class)        
+    public ResponseEntity<Collection<Cidade>> findAll() throws JsonProcessingException  {
         Collection<Cidade> cidades = cidadeService.findAll();
 
         return new ResponseEntity<>(cidades, HttpStatus.OK);
@@ -55,7 +58,8 @@ public class CidadeController extends BaseController {
             value = "/api/cidades/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Cidade> findOne(@PathVariable("id") Long id) throws NotFoundException {        
+    @JsonView(CidadeViews.CidadeSimple.class)    
+    public ResponseEntity<Cidade> findOne(@PathVariable("id") Long id) throws NotFoundException, JsonProcessingException{        
         Cidade cidade = cidadeService.findOne(id);
 
         return new ResponseEntity<>(cidade, HttpStatus.OK);        
@@ -66,7 +70,7 @@ public class CidadeController extends BaseController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> insert(@RequestBody @Valid Cidade cidade, BindingResult bindingResult) throws NotUniqueException, ValidationException, NotFoundException, JsonProcessingException{
+    public ResponseEntity<Object> insert(@RequestBody @Valid Cidade cidade, BindingResult bindingResult) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
@@ -76,7 +80,7 @@ public class CidadeController extends BaseController {
 
             Estado estado = estadoService.findOne(savedCidade.getEstado().getId());
                         
-            return new ResponseEntity<>(CidadeSerializer.serializeWithEstado(savedCidade, estado), HttpStatus.CREATED);            
+            return new ResponseEntity<>(CidadeWithEstadoSerializer.serializeCidadeWithEstado(savedCidade, estado), HttpStatus.CREATED);            
         }
     }
 
@@ -85,15 +89,17 @@ public class CidadeController extends BaseController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Cidade cidade, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Cidade cidade, BindingResult bindingResult) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
             Cidade updatedCidade = cidadeService.update(id, cidade);
+            
+            Estado estado = estadoService.findOne(updatedCidade.getEstado().getId());
 
-            return new ResponseEntity<>(updatedCidade, HttpStatus.OK);
+            return new ResponseEntity<>(CidadeWithEstadoSerializer.serializeCidadeWithEstado(updatedCidade, estado), HttpStatus.OK);
         }
     }    
 }
