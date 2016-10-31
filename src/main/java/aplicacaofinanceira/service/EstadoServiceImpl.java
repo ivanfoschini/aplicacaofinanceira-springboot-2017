@@ -1,10 +1,11 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.EstadoRepository;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -25,18 +26,22 @@ public class EstadoServiceImpl implements EstadoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         Estado estado = estadoRepository.findOne(id);
 
         if (estado == null) {
             throw new NotFoundException(messageSource.getMessage("estadoNaoEncontrado", null, null));
+        }
+       
+        if (!estado.getCidades().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("estadoPossuiCidades", null, null));
         }
         
         estadoRepository.delete(id);
     }
 
     @Override
-    public Collection<Estado> findAll() {
+    public List<Estado> findAll() {
         return estadoRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
     }    
 

@@ -12,7 +12,7 @@ import aplicacaofinanceira.util.CidadeWithEstadoSerializer;
 import aplicacaofinanceira.validation.ValidationUtil;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.Collection;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,8 +48,8 @@ public class CidadeController extends BaseController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(CidadeViews.CidadeSimple.class)        
-    public ResponseEntity<Collection<Cidade>> findAll() throws JsonProcessingException  {
-        Collection<Cidade> cidades = cidadeService.findAll();
+    public ResponseEntity<List<Cidade>> findAll() {
+        List<Cidade> cidades = cidadeService.findAll();
 
         return new ResponseEntity<>(cidades, HttpStatus.OK);
     }
@@ -59,7 +59,7 @@ public class CidadeController extends BaseController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(CidadeViews.CidadeSimple.class)    
-    public ResponseEntity<Cidade> findOne(@PathVariable("id") Long id) throws NotFoundException, JsonProcessingException{        
+    public ResponseEntity<Cidade> findOne(@PathVariable("id") Long id) throws NotFoundException {        
         Cidade cidade = cidadeService.findOne(id);
 
         return new ResponseEntity<>(cidade, HttpStatus.OK);        

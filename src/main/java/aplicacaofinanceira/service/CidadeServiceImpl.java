@@ -4,7 +4,7 @@ import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.repository.CidadeRepository;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -36,7 +36,7 @@ public class CidadeServiceImpl implements CidadeService {
     }
 
     @Override
-    public Collection<Cidade> findAll() {
+    public List<Cidade> findAll() {
         return cidadeRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
     }
 
@@ -65,14 +65,19 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Cidade update(Long id, Cidade cidade) throws NotFoundException {
+    public Cidade update(Long id, Cidade cidade) throws NotFoundException, NotUniqueException {
         Cidade cidadeToUpdate = findOne(id);
 
         if (cidadeToUpdate == null) {
             throw new NoResultException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
         }
+        
+        if (!isNomeUniqueForEstado(cidade.getNome(), cidade.getEstado().getId(), cidadeToUpdate.getId())) {
+            throw new NotUniqueException(messageSource.getMessage("cidadeNomeDeveSerUnicoParaEstado", null, null));
+        }
 
         cidadeToUpdate.setNome(cidade.getNome());
+        cidadeToUpdate.setEstado(cidade.getEstado());
 
         return cidadeRepository.save(cidadeToUpdate);
     }
@@ -81,5 +86,11 @@ public class CidadeServiceImpl implements CidadeService {
         Cidade cidade = cidadeRepository.findByNomeAndEstado(nomeDaCidade, idDoEstado);
 
         return cidade != null ? false : true;        
+    }
+
+    private boolean isNomeUniqueForEstado(String nomeDaCidade, Long idDoEstadoToUpdate, Long idDaCidadeCurrent) {
+        Cidade cidade = cidadeRepository.findByNomeAndEstadoAndDifferentId(nomeDaCidade, idDoEstadoToUpdate, idDaCidadeCurrent);
+
+        return cidade != null ? false : true;
     }
 }
