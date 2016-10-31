@@ -8,7 +8,7 @@ import aplicacaofinanceira.service.BancoService;
 import aplicacaofinanceira.util.BancoViews;
 import aplicacaofinanceira.validation.ValidationUtil;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Collection;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +41,8 @@ public class BancoController extends BaseController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(BancoViews.BancoSimple.class)
-    public ResponseEntity<Collection<Banco>> findAll() {
-        Collection<Banco> bancos = bancoService.findAll();
+    public ResponseEntity<List<Banco>> findAll() {
+        List<Banco> bancos = bancoService.findAll();
 
         return new ResponseEntity<>(bancos, HttpStatus.OK);
     }

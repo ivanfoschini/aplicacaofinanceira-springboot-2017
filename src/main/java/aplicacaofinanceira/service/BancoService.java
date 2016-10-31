@@ -3,13 +3,13 @@ package aplicacaofinanceira.service;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Banco;
-import java.util.Collection;
+import java.util.List;
 
 public interface BancoService {
     
     void delete(Long id) throws NotFoundException;    
     
-    Collection<Banco> findAll();
+    List<Banco> findAll();
 
     Banco findOne(Long id) throws NotFoundException;    
     
