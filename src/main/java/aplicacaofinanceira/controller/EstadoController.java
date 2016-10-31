@@ -5,7 +5,9 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.service.EstadoService;
+import aplicacaofinanceira.util.EstadoViews;
 import aplicacaofinanceira.validation.ValidationUtil;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Collection;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class EstadoController extends BaseController {
     @RequestMapping(
             value = "/api/estados/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Estado> delete(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
         estadoService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -38,6 +40,7 @@ public class EstadoController extends BaseController {
             value = "/api/estados",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(EstadoViews.EstadoSimple.class)
     public ResponseEntity<Collection<Estado>> findAll() {
         Collection<Estado> estados = estadoService.findAll();
 
@@ -48,6 +51,7 @@ public class EstadoController extends BaseController {
             value = "/api/estados/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(EstadoViews.EstadoSimple.class)
     public ResponseEntity<Estado> findOne(@PathVariable("id") Long id) throws NotFoundException {        
         Estado estado = estadoService.findOne(id);
 
@@ -59,7 +63,8 @@ public class EstadoController extends BaseController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> insert(@RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
+    @JsonView(EstadoViews.EstadoSimple.class)
+    public ResponseEntity<Estado> insert(@RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotUniqueException, ValidationException  {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             
@@ -76,7 +81,8 @@ public class EstadoController extends BaseController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
+    @JsonView(EstadoViews.EstadoSimple.class)
+    public ResponseEntity<Estado> update(@PathVariable("id") Long id, @RequestBody @Valid Estado estado, BindingResult bindingResult) throws NotFoundException, NotUniqueException, ValidationException {
         if (bindingResult.hasErrors()) {
             ValidationUtil.handleValidationErrors(bindingResult);
             

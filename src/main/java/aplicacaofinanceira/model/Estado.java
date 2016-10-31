@@ -1,5 +1,7 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.EstadoViews;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.CascadeType;
@@ -25,11 +27,13 @@ public class Estado implements Serializable {
     @SequenceGenerator(name = "Estado_Generator", sequenceName = "estado_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Estado_Generator")
     @Column(name = "estado_id", nullable = false)
+    @JsonView(EstadoViews.EstadoSimple.class)
     private Long id;
     
     @NotNull(message = "{estadoNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
+    @JsonView(EstadoViews.EstadoSimple.class)
     private String nome;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado", fetch = FetchType.LAZY)
