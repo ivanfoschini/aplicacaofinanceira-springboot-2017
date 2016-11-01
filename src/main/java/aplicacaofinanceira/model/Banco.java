@@ -4,11 +4,15 @@ import aplicacaofinanceira.util.BancoViews;
 import aplicacaofinanceira.validation.Cnpj;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -45,6 +49,9 @@ public class Banco implements Serializable {
     @Column(name = "nome", nullable = false, length = 255)
     @JsonView(BancoViews.BancoSimple.class)
     private String nome;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "banco", fetch = FetchType.LAZY)
+    private Collection<Agencia> agencias;
 
     public Banco() {}
 
@@ -78,6 +85,14 @@ public class Banco implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Collection<Agencia> getAgencias() {
+        return agencias;
+    }
+
+    public void setAgencias(Collection<Agencia> agencias) {
+        this.agencias = agencias;
     }
 
     @Override

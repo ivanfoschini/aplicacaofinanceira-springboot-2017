@@ -1,8 +1,13 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.AgenciaViews;
 import aplicacaofinanceira.util.CidadeViews;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -26,18 +32,22 @@ public class Cidade implements Serializable {
     @SequenceGenerator(name = "Cidade_Generator", sequenceName = "cidade_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Cidade_Generator")
     @Column(name = "cidade_id", nullable = false)
-    @JsonView(CidadeViews.CidadeSimple.class)
+    @JsonView({AgenciaViews.AgenciaSimple.class, CidadeViews.CidadeSimple.class})
     private Long id;
     
     @NotNull(message = "{cidadeNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{cidadeNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
-    @JsonView(CidadeViews.CidadeSimple.class)
+    @JsonView({AgenciaViews.AgenciaSimple.class, CidadeViews.CidadeSimple.class})
     private String nome;
     
     @JoinColumn(name = "estado_id", referencedColumnName = "estado_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView(AgenciaViews.AgenciaSimple.class)
     private Estado estado;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade", fetch = FetchType.LAZY)
+    private Collection<Endereco> enderecos;
 
     public Cidade() {}
 
@@ -63,6 +73,14 @@ public class Cidade implements Serializable {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public Collection<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(Collection<Endereco> enderecos) {
+        this.enderecos = enderecos;
     }
 
     @Override

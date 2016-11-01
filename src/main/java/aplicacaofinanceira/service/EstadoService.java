@@ -11,10 +11,10 @@ public interface EstadoService {
     void delete(Long id) throws NotEmptyCollectionException, NotFoundException;    
     
     List<Estado> findAll();
-
+    
     Estado findOne(Long id) throws NotFoundException;    
     
     Estado insert(Estado estado) throws NotUniqueException;        
     
-    Estado update(Long id, Estado estado) throws NotFoundException, NotUniqueException;
+    Estado update(Long id, Estado estado) throws NotFoundException, NotUniqueException;    
 }

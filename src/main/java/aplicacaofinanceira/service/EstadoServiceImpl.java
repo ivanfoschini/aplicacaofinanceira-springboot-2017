@@ -4,6 +4,7 @@ import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Estado;
+import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
 import javax.persistence.NoResultException;
@@ -18,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class EstadoServiceImpl implements EstadoService {
 
+    @Autowired
+    private CidadeRepository cidadeRepository;
+    
     @Autowired
     private EstadoRepository estadoRepository;
     
@@ -43,8 +47,8 @@ public class EstadoServiceImpl implements EstadoService {
     @Override
     public List<Estado> findAll() {
         return estadoRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
-    }    
-
+    }
+    
     @Override
     public Estado findOne(Long id) throws NotFoundException {
         Estado estado = estadoRepository.findOne(id);

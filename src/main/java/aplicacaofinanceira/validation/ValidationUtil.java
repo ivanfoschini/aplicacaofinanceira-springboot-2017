@@ -20,4 +20,14 @@ public class ValidationUtil {
         
         throw new ValidationException();
     }
+
+    public static void handleValidationErrors(List<FieldError> fieldErrors) throws ValidationException {
+        errorsList = new ArrayList();
+        
+        for (FieldError error: fieldErrors) {
+            errorsList.add(error.getDefaultMessage());
+        }
+        
+        throw new ValidationException();
+    }
 }
