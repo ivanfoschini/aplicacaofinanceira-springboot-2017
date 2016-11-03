@@ -7,7 +7,6 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.validation.ValidationUtil;
 import java.util.Map;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -39,15 +38,6 @@ public class BaseController {
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
     
-    @ExceptionHandler(NoResultException.class)
-    public ResponseEntity<Map<String, Object>> handleNoResultException(Exception exception, HttpServletRequest request) {
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
-    }    
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFoundException(Exception exception, HttpServletRequest request) {
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
