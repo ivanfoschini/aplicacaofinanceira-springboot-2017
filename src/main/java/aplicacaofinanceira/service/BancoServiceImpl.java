@@ -1,5 +1,6 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Banco;
@@ -25,11 +26,15 @@ public class BancoServiceImpl implements BancoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         Banco banco = bancoRepository.findOne(id);
 
         if (banco == null) {
             throw new NotFoundException(messageSource.getMessage("bancoNaoEncontrado", null, null));
+        }
+        
+        if (!banco.getAgencias().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("bancoPossuiAgencias", null, null));
         }
         
         bancoRepository.delete(id);

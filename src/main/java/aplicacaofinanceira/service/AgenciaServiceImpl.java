@@ -31,7 +31,7 @@ public class AgenciaServiceImpl implements AgenciaService {
             throw new NotFoundException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
         }
 
-        agenciaRepository.delete(id);
+        agenciaRepository.delete(agencia);
     }
 
     @Override
@@ -57,29 +57,36 @@ public class AgenciaServiceImpl implements AgenciaService {
             throw new NotUniqueException(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null));
         }
 
-        Agencia savedAgencia = agenciaRepository.save(agencia);
+        Agencia savedAgencia = agenciaRepository.saveAndFlush(agencia);
 
         return savedAgencia;
     }
 
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//    public Agencia update(Long id, Agencia agencia) throws NotFoundException, NotUniqueException {
-//        Agencia agenciaToUpdate = findOne(id);
-//
-//        if (agenciaToUpdate == null) {
-//            throw new NoResultException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
-//        }
-//        
-//        if (!isNomeUniqueForEstado(agencia.getNome(), agencia.getEstado().getId(), agenciaToUpdate.getId())) {
-//            throw new NotUniqueException(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null));
-//        }
-//
-//        agenciaToUpdate.setNome(agencia.getNome());
-//        agenciaToUpdate.setEstado(agencia.getEstado());
-//
-//        return agenciaRepository.save(agenciaToUpdate);
-//    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Agencia update(Long id, Agencia agencia) throws NotFoundException, NotUniqueException {
+        Agencia agenciaToUpdate = findOne(id);
+
+        if (agenciaToUpdate == null) {
+            throw new NotFoundException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
+        }
+        
+        if (!isNumberUnique(agencia.getNumero(), agenciaToUpdate.getId())) {
+            throw new NotUniqueException(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null));
+        }
+
+        agenciaToUpdate.setNome(agencia.getNome());
+        agenciaToUpdate.setNumero(agencia.getNumero());
+        agenciaToUpdate.setBanco(agencia.getBanco());
+        agenciaToUpdate.getEndereco().setLogradouro(agencia.getEndereco().getLogradouro());
+        agenciaToUpdate.getEndereco().setNumero(agencia.getEndereco().getNumero());
+        agenciaToUpdate.getEndereco().setComplemento(agencia.getEndereco().getComplemento());
+        agenciaToUpdate.getEndereco().setBairro(agencia.getEndereco().getBairro());
+        agenciaToUpdate.getEndereco().setCep(agencia.getEndereco().getCep());
+        agenciaToUpdate.getEndereco().setCidade(agencia.getEndereco().getCidade());
+
+        return agenciaRepository.save(agenciaToUpdate);
+    }
 
     private boolean isNumberUnique(Integer numero) {
         Agencia agencia = agenciaRepository.findByNumero(numero);

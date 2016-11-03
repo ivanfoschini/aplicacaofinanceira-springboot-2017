@@ -15,5 +15,5 @@ public interface AgenciaService {
     
     Agencia insert(Agencia agencia) throws NotUniqueException;        
     
-//    Agencia update(Long id, Agencia agencia) throws NotFoundException, NotUniqueException;
+    Agencia update(Long id, Agencia agencia) throws NotFoundException, NotUniqueException;
 }

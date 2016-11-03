@@ -110,24 +110,26 @@ public class AgenciaController extends BaseController {
         }
     }    
     
-//    @RequestMapping(
-//            value = "/api/agencias/{id}",
-//            method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Agencia agencia, BindingResult bindingResult) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
-//        if (bindingResult.hasErrors()) {
-//            ValidationUtil.handleValidationErrors(bindingResult);
-//            
-//            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-//        } else {
-//            Agencia updatedAgencia = agenciaService.update(id, agencia);
-//            
-//            Estado estado = estadoService.findOne(updatedAgencia.getEstado().getId());
-//
-//            return new ResponseEntity<>(AgenciaWithEstadoSerializer.serializeAgenciaWithEstado(updatedAgencia, estado), HttpStatus.OK);
-//        }
-//    }      
+    @RequestMapping(
+            value = "/api/agencias/{id}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Agencia agencia, BindingResult bindingResult) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
+        if (bindingResult.hasErrors()) {
+            ValidationUtil.handleValidationErrors(bindingResult);
+            
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        } else {
+            Agencia updatedAgencia = agenciaService.update(id, agencia);
+            
+            Cidade cidade = cidadeService.findOne(updatedAgencia.getEndereco().getCidade().getId());
+            Estado estado = HibernateUtil.initializeAndUnproxy(estadoService.findOne(cidade.getEstado().getId()));
+            Banco banco = bancoService.findOne(updatedAgencia.getBanco().getId());            
+
+            return new ResponseEntity<>(AgenciaWithEnderecoAndBancoSerializer.serializeAgenciaWithEnderecoAndBanco(updatedAgencia, cidade, estado, banco), HttpStatus.OK);
+        }
+    }      
 
     private List<FieldError> validateEndereco(Endereco endereco) {
         Set<ConstraintViolation<Endereco>> enderecoViolations = Validation.buildDefaultValidatorFactory().getValidator().validate(endereco);
