@@ -5,7 +5,6 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.repository.CidadeRepository;
 import java.util.List;
-import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -32,7 +31,7 @@ public class CidadeServiceImpl implements CidadeService {
             throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
         }
 
-        cidadeRepository.delete(id);
+        cidadeRepository.delete(cidade);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class CidadeServiceImpl implements CidadeService {
         Cidade cidadeToUpdate = findOne(id);
 
         if (cidadeToUpdate == null) {
-            throw new NoResultException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
+            throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
         }
         
         if (!isNomeUniqueForEstado(cidade.getNome(), cidade.getEstado().getId(), cidadeToUpdate.getId())) {

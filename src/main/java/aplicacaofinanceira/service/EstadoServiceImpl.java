@@ -7,7 +7,6 @@ import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
-import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -41,7 +40,7 @@ public class EstadoServiceImpl implements EstadoService {
             throw new NotEmptyCollectionException(messageSource.getMessage("estadoPossuiCidades", null, null));
         }
         
-        estadoRepository.delete(id);
+        estadoRepository.delete(estado);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class EstadoServiceImpl implements EstadoService {
         Estado estadoToUpdate = findOne(id);
 
         if (estadoToUpdate == null) {
-            throw new NoResultException(messageSource.getMessage("estadoNaoEncontrado", null, null));
+            throw new NotFoundException(messageSource.getMessage("estadoNaoEncontrado", null, null));
         }
         
         if (!isNomeUnique(estado.getNome(), estadoToUpdate.getId())) {

@@ -8,7 +8,6 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.validation.ValidationUtil;
 import java.util.Map;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -48,16 +47,7 @@ public class BaseController {
         Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-    
-    @ExceptionHandler(NoResultException.class)
-    public ResponseEntity<Map<String, Object>> handleNoResultException(Exception exception, HttpServletRequest request) {
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
-    }
+    }    
 
     @ExceptionHandler(NotEmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleNotEmptyCollectionException(Exception exception, HttpServletRequest request) {
