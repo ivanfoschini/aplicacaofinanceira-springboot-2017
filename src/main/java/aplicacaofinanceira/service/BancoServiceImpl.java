@@ -5,7 +5,6 @@ import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import java.util.List;
-import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -32,7 +31,7 @@ public class BancoServiceImpl implements BancoService {
             throw new NotFoundException(messageSource.getMessage("bancoNaoEncontrado", null, null));
         }
         
-        bancoRepository.delete(id);
+        bancoRepository.delete(banco);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class BancoServiceImpl implements BancoService {
         Banco bancoToUpdate = findOne(id);
 
         if (bancoToUpdate == null) {
-            throw new NoResultException(messageSource.getMessage("bancoNaoEncontrado", null, null));
+            throw new NotFoundException(messageSource.getMessage("bancoNaoEncontrado", null, null));
         }
         
         if (!isNumberUnique(banco.getNumero(), bancoToUpdate.getId())) {
