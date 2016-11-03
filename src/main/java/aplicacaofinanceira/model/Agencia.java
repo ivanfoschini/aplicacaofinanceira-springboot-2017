@@ -31,7 +31,7 @@ public class Agencia implements Serializable {
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Agencia_Generator")
     @Column(name = "agencia_id", nullable = false)  
     @JsonView(AgenciaViews.AgenciaSimple.class)
-    private Integer id;
+    private Long id;
     
     @NotNull(message = "{agenciaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{agenciaNumeroDeveSerMaiorDoQueZero}")
@@ -47,7 +47,6 @@ public class Agencia implements Serializable {
     
     @JoinColumn(name = "endereco_id", referencedColumnName = "endereco_id", nullable = false)
     @OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private Endereco endereco;
     
     @JoinColumn(name = "banco_id", referencedColumnName = "banco_id", nullable = false)
@@ -56,11 +55,11 @@ public class Agencia implements Serializable {
     
     public Agencia() {}
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

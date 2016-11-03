@@ -1,8 +1,6 @@
 package aplicacaofinanceira.model;
 
-import aplicacaofinanceira.util.AgenciaViews;
 import aplicacaofinanceira.validation.Cep;
-import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,36 +28,30 @@ public class Endereco implements Serializable {
     @SequenceGenerator(name="Endereco_Generator", sequenceName="endereco_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Endereco_Generator")    
     @Column(name = "endereco_id", nullable = false)    
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private Integer id;
     
     @NotNull(message = "{enderecoLogradouroNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{enderecoLogradouroDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "logradouro", nullable = false, length = 255)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private String logradouro;
     
     @NotNull(message = "{enderecoNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{enderecoNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private int numero;
     
     @Size(max = 255, message = "{enderecoComplementoDeveTerNoMaximoDuzentosECinquentaECincoCaracteres}")
     @Column(name = "complemento", length = 255)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private String complemento;
     
     @NotNull(message = "{enderecoBairroNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{enderecoBairroDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")    
     @Column(name = "bairro", nullable = false, length = 255)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private String bairro;
     
     @NotNull(message = "{enderecoCepNaoPodeSerNulo}")
     @Cep(message = "{enderecoCepInvalido}")
     @Column(name = "cep", nullable = false, length = 9)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private String cep;
     
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "endereco", fetch = FetchType.LAZY)
@@ -67,7 +59,6 @@ public class Endereco implements Serializable {
     
     @JoinColumn(name = "cidade_id", referencedColumnName = "cidade_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
     private Cidade cidade;
 
     public Endereco() {}
