@@ -7,12 +7,14 @@ import aplicacaofinanceira.model.Agencia;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.Endereco;
+import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.service.AgenciaService;
 import aplicacaofinanceira.service.BancoService;
 import aplicacaofinanceira.service.CidadeService;
 import aplicacaofinanceira.service.EstadoService;
 import aplicacaofinanceira.util.AgenciaViews;
 import aplicacaofinanceira.util.AgenciaWithEnderecoAndBancoSerializer;
+import aplicacaofinanceira.util.HibernateUtil;
 import aplicacaofinanceira.validation.ValidationUtil;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,17 +103,13 @@ public class AgenciaController extends BaseController {
             Agencia savedAgencia = agenciaService.insert(agencia);   
 
             Cidade cidade = cidadeService.findOne(savedAgencia.getEndereco().getCidade().getId());
-//            Estado estado = estadoService.findByCidadeId(savedAgencia.getEndereco().getCidade().getId());
+            Estado estado = HibernateUtil.initializeAndUnproxy(estadoService.findOne(cidade.getEstado().getId()));
             Banco banco = bancoService.findOne(savedAgencia.getBanco().getId());            
-//                        
-//            return new ResponseEntity<>(AgenciaWithEnderecoAndBancoSerializer.serializeAgenciaWithEnderecoAndBanco(savedAgencia, cidade, estado, banco), HttpStatus.CREATED);            
-
-            return new ResponseEntity<>(AgenciaWithEnderecoAndBancoSerializer.serializeAgenciaWithEnderecoAndBanco(savedAgencia, cidade, banco), HttpStatus.CREATED);            
-
-//            return new ResponseEntity<>(savedAgencia, HttpStatus.CREATED);            
+                        
+            return new ResponseEntity<>(AgenciaWithEnderecoAndBancoSerializer.serializeAgenciaWithEnderecoAndBanco(savedAgencia, cidade, estado, banco), HttpStatus.CREATED);            
         }
-    }
-
+    }    
+    
 //    @RequestMapping(
 //            value = "/api/agencias/{id}",
 //            method = RequestMethod.PUT,

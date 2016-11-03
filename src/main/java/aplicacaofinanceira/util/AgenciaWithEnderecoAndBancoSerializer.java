@@ -34,18 +34,19 @@ public class AgenciaWithEnderecoAndBancoSerializer extends StdSerializer<Agencia
         jgen.writeStringField(Constants.ENDERECO_COMPLEMENTO, value.getEndereco().getComplemento());
         jgen.writeStringField(Constants.ENDERECO_BAIRRO, value.getEndereco().getBairro());
         jgen.writeStringField(Constants.ENDERECO_CEP, value.getEndereco().getCep());
+        jgen.writeNumberField(Constants.CIDADE_ID, value.getEndereco().getCidade().getId());
         jgen.writeStringField(Constants.CIDADE_NOME, value.getEndereco().getCidade().getNome());
-//        jgen.writeStringField(Constants.ESTADO_NOME, value.getEndereco().getCidade().getEstado().getNome());
+        jgen.writeNumberField(Constants.ESTADO_ID, value.getEndereco().getCidade().getEstado().getId());
+        jgen.writeStringField(Constants.ESTADO_NOME, value.getEndereco().getCidade().getEstado().getNome());
         jgen.writeNumberField(Constants.BANCO_ID, value.getBanco().getId());
         jgen.writeStringField(Constants.BANCO_NOME, value.getBanco().getNome());
         jgen.writeEndObject();
     }
 
-    //public static String serializeAgenciaWithEnderecoAndBanco(Agencia agencia, Cidade cidade, Estado estado, Banco banco) throws JsonProcessingException {
-    public static String serializeAgenciaWithEnderecoAndBanco(Agencia agencia, Cidade cidade, Banco banco) throws JsonProcessingException {
-        agencia.getBanco().setNome(banco.getNome());
-        agencia.getEndereco().getCidade().setNome(cidade.getNome());
-//        agencia.getEndereco().getCidade().getEstado().setNome(estado.getNome());
+    public static String serializeAgenciaWithEnderecoAndBanco(Agencia agencia, Cidade cidade, Estado estado, Banco banco) throws JsonProcessingException {
+        agencia.getEndereco().setCidade(cidade);
+        agencia.getEndereco().getCidade().setEstado(estado);
+        agencia.setBanco(banco);        
 
         ObjectMapper mapper = new ObjectMapper();
         
