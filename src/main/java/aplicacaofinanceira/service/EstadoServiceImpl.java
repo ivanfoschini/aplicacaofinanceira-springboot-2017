@@ -4,7 +4,6 @@ import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Estado;
-import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class EstadoServiceImpl implements EstadoService {
 
-    @Autowired
-    private CidadeRepository cidadeRepository;
-    
     @Autowired
     private EstadoRepository estadoRepository;
     
