@@ -3,6 +3,7 @@ package aplicacaofinanceira.model;
 import aplicacaofinanceira.util.AgenciaViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -53,6 +55,9 @@ public class Agencia implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Banco banco;
     
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "agencia", fetch = FetchType.LAZY)
+    private Collection<Conta> contas;
+    
     public Agencia() {}
 
     public Long getId() {
@@ -93,6 +98,14 @@ public class Agencia implements Serializable {
 
     public void setBanco(Banco banco) {
         this.banco = banco;
+    }
+
+    public Collection<Conta> getContas() {
+        return contas;
+    }
+
+    public void setContas(Collection<Conta> contas) {
+        this.contas = contas;
     }
 
     @Override
