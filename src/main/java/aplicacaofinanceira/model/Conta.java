@@ -1,6 +1,8 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.ContaCorrenteViews;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -30,22 +32,27 @@ public abstract class Conta implements Serializable {
     @Id
     @SequenceGenerator(name="Conta_Generator", sequenceName="conta_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Conta_Generator")            
-    @Column(name = "conta_id", nullable = false)    
+    @Column(name = "conta_id", nullable = false)   
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private Long id;
     
     @Column(name = "numero", nullable = false)
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private int numero;
     
     @Column(name = "saldo", nullable = false)
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private float saldo;
     
     @Column(name = "data_de_abertura", nullable = false)
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private Date dataDeAbertura;
         
     @JoinColumn(name = "agencia_id", referencedColumnName = "agencia_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private Agencia agencia;
         
     public Conta() {}

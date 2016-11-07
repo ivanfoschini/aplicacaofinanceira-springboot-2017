@@ -14,6 +14,7 @@ import aplicacaofinanceira.service.CidadeService;
 import aplicacaofinanceira.service.EstadoService;
 import aplicacaofinanceira.util.AgenciaViews;
 import aplicacaofinanceira.util.AgenciaWithEnderecoAndBancoSerializer;
+import aplicacaofinanceira.util.ContaCorrenteViews;
 import aplicacaofinanceira.util.HibernateUtil;
 import aplicacaofinanceira.validation.ValidationUtil;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -75,7 +76,7 @@ public class AgenciaController extends BaseController {
             value = "/api/agencias/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView(AgenciaViews.AgenciaSimple.class)    
+    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)    
     public ResponseEntity<Agencia> findOne(@PathVariable("id") Long id) throws NotFoundException {        
         Agencia agencia = agenciaService.findOne(id);
 

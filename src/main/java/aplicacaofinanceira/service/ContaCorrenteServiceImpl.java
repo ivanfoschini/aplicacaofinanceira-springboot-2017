@@ -1,10 +1,13 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.ContaCorrente;
 import aplicacaofinanceira.repository.ContaCorrenteRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,22 +33,22 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
 //
 //        contaCorrenteRepository.delete(contaCorrente);
 //    }
-//
-//    @Override
-//    public List<ContaCorrente> findAll() {
-//        return contaCorrenteRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
-//    }
-//
-//    @Override
-//    public ContaCorrente findOne(Long id) throws NotFoundException {
-//        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
-//
-//        if (contaCorrente == null) {
-//            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
-//        }
-//
-//        return contaCorrente;
-//    }
+
+    @Override
+    public List<ContaCorrente> findAll() {
+        return contaCorrenteRepository.findAll(new Sort(Sort.Direction.ASC, "numero"));
+    }
+
+    @Override
+    public ContaCorrente findOne(Long id) throws NotFoundException {
+        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
+
+        if (contaCorrente == null) {
+            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
+        }
+
+        return contaCorrente;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

@@ -1,6 +1,7 @@
 package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.AgenciaViews;
+import aplicacaofinanceira.util.ContaCorrenteViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
@@ -38,13 +39,13 @@ public class Agencia implements Serializable {
     @NotNull(message = "{agenciaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{agenciaNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
+    @JsonView({AgenciaViews.AgenciaSimple.class, ContaCorrenteViews.ContaCorrenteSimple.class})
     private int numero;
     
     @NotNull(message = "{agenciaNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
-    @JsonView(AgenciaViews.AgenciaSimple.class)
+    @JsonView({AgenciaViews.AgenciaSimple.class, ContaCorrenteViews.ContaCorrenteSimple.class})
     private String nome;
     
     @JoinColumn(name = "endereco_id", referencedColumnName = "endereco_id", nullable = false)
