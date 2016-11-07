@@ -1,5 +1,6 @@
 package aplicacaofinanceira.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -40,6 +41,7 @@ public abstract class Conta implements Serializable {
     
     @Column(name = "data_de_abertura", nullable = false)
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "America/Sao_Paulo")
     private Date dataDeAbertura;
         
     @JoinColumn(name = "agencia_id", referencedColumnName = "agencia_id", nullable = false)
