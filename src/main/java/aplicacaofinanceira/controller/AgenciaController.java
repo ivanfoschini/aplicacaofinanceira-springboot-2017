@@ -115,9 +115,16 @@ public class AgenciaController extends BaseController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Agencia agencia, BindingResult bindingResult) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
-        if (bindingResult.hasErrors()) {
-            ValidationUtil.handleValidationErrors(bindingResult);
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid Agencia agencia, BindingResult bindingResultAgencia) throws JsonProcessingException, NotFoundException, NotUniqueException, ValidationException {
+        List<FieldError> enderecoFieldErrors = validateEndereco(agencia.getEndereco());
+        
+        if (bindingResultAgencia.hasErrors() || !enderecoFieldErrors.isEmpty()) {
+            List<FieldError> fieldErrors = new ArrayList<>(); 
+            
+            fieldErrors.addAll(bindingResultAgencia.getFieldErrors());
+            fieldErrors.addAll(enderecoFieldErrors);
+            
+            ValidationUtil.handleValidationErrors(fieldErrors);
             
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
