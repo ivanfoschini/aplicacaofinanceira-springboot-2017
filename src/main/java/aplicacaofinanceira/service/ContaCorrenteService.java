@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ContaCorrenteService {
     
-//    void delete(Long id) throws NotFoundException;    
+    void delete(Long id) throws NotFoundException;    
     
     List<ContaCorrente> findAll();
 

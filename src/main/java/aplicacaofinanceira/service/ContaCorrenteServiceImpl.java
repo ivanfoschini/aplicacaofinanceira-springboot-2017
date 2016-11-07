@@ -22,17 +22,17 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
     @Autowired
     private MessageSource messageSource;
 
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//    public void delete(Long id) throws NotFoundException {
-//        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
-//
-//        if (contaCorrente == null) {
-//            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
-//        }
-//
-//        contaCorrenteRepository.delete(contaCorrente);
-//    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void delete(Long id) throws NotFoundException {
+        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
+
+        if (contaCorrente == null) {
+            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
+        }
+
+        contaCorrenteRepository.delete(contaCorrente);
+    }
 
     @Override
     public List<ContaCorrente> findAll() {

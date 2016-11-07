@@ -34,14 +34,14 @@ public class ContaCorrenteController extends BaseController {
     @Autowired
     private AgenciaService agenciaService;
 
-//    @RequestMapping(
-//            value = "/api/contasCorrentes/{id}",
-//            method = RequestMethod.DELETE)
-//    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
-//        contaCorrenteService.delete(id);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @RequestMapping(
+            value = "/api/contasCorrentes/{id}",
+            method = RequestMethod.DELETE)
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
+        contaCorrenteService.delete(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
     @RequestMapping(
             value = "/api/contasCorrentes",
