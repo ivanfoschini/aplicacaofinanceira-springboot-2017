@@ -20,6 +20,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "conta")
@@ -36,14 +38,18 @@ public abstract class Conta implements Serializable {
     @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private Long id;
     
+    @NotNull(message = "{contaNumeroNaoPodeSerNulo}")
+    @Min(value = 1, message = "{contaNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
     @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private int numero;
     
+    @NotNull(message = "{contaSaldoNaoPodeSerNulo}")
     @Column(name = "saldo", nullable = false)
     @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
     private float saldo;
     
+    @NotNull(message = "{contaDataDeAberturaNaoPodeSerNula}")
     @Column(name = "data_de_abertura", nullable = false)
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
