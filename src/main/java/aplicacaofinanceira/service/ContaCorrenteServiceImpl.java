@@ -2,6 +2,7 @@ package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
+import aplicacaofinanceira.model.Conta;
 import aplicacaofinanceira.model.ContaCorrente;
 import aplicacaofinanceira.repository.ContaCorrenteRepository;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
         ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
 
         if (contaCorrente == null) {
-            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
+            throw new NotFoundException(messageSource.getMessage("contaNaoEncontrada", null, null));
         }
 
         contaCorrenteRepository.delete(contaCorrente);
@@ -44,7 +45,7 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
         ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);
 
         if (contaCorrente == null) {
-            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
+            throw new NotFoundException(messageSource.getMessage("contaNaoEncontrada", null, null));
         }
 
         return contaCorrente;
@@ -53,43 +54,46 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public ContaCorrente insert(ContaCorrente contaCorrente) throws NotUniqueException {
-//        if (!isNumberUnique(contaCorrente.getNumero())) {
-//            throw new NotUniqueException(messageSource.getMessage("contaCorrenteNumeroDeveSerUnico", null, null));
-//        }
+        if (!isNumberUnique(contaCorrente.getNumero())) {
+            throw new NotUniqueException(messageSource.getMessage("contaNumeroDeveSerUnico", null, null));
+        }
 
         ContaCorrente savedContaCorrente = contaCorrenteRepository.save(contaCorrente);
 
         return savedContaCorrente;
     }
 
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//    public ContaCorrente update(Long id, ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException {
-//        ContaCorrente contaCorrenteToUpdate = findOne(id);
-//
-//        if (contaCorrenteToUpdate == null) {
-//            throw new NotFoundException(messageSource.getMessage("contaCorrenteNaoEncontrada", null, null));
-//        }
-//        
-//        if (!isNumberUnique(contaCorrente.getNumero(), contaCorrenteToUpdate.getId())) {
-//            throw new NotUniqueException(messageSource.getMessage("contaCorrenteNumeroDeveSerUnico", null, null));
-//        }
-//
-//        contaCorrenteToUpdate.setNome(contaCorrente.getNome());
-//        contaCorrenteToUpdate.setEstado(contaCorrente.getEstado());
-//
-//        return contaCorrenteRepository.save(contaCorrenteToUpdate);
-//    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public ContaCorrente update(Long id, ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException {
+        ContaCorrente contaCorrenteToUpdate = findOne(id);
 
-//    private boolean isNumberUnique(Integer numero) {
-//        ContaCorrente contaCorrente = contaCorrenteRepository.findByNumero(numero);
-//        
-//        return contaCorrente == null ? true : false;
-//    }
-//    
-//    private boolean isNumberUnique(Integer numero, Long id) {
-//        ContaCorrente contaCorrente = contaCorrenteRepository.findByNumeroAndDifferentId(numero, id);
-//        
-//        return contaCorrente == null ? true : false;
-//    }   
+        if (contaCorrenteToUpdate == null) {
+            throw new NotFoundException(messageSource.getMessage("contaNaoEncontrada", null, null));
+        }
+        
+        if (!isNumberUnique(contaCorrente.getNumero(), contaCorrenteToUpdate.getId())) {
+            throw new NotUniqueException(messageSource.getMessage("contaNumeroDeveSerUnico", null, null));
+        }
+
+        contaCorrenteToUpdate.setNumero(contaCorrente.getNumero());
+        contaCorrenteToUpdate.setSaldo(contaCorrente.getSaldo());
+        contaCorrenteToUpdate.setDataDeAbertura(contaCorrente.getDataDeAbertura());
+        contaCorrenteToUpdate.setLimite(contaCorrente.getLimite());
+        contaCorrenteToUpdate.setAgencia(contaCorrente.getAgencia());
+
+        return contaCorrenteRepository.save(contaCorrenteToUpdate);
+    }
+
+    private boolean isNumberUnique(Integer numero) {
+        Conta conta = contaCorrenteRepository.findByNumero(numero);
+        
+        return conta == null ? true : false;
+    }
+    
+    private boolean isNumberUnique(Integer numero, Long id) {
+        Conta conta = contaCorrenteRepository.findByNumeroAndDifferentId(numero, id);
+        
+        return conta == null ? true : false;
+    }   
 }

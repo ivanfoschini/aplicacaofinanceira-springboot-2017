@@ -1,6 +1,7 @@
 package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ContaCorrenteViews;
+import aplicacaofinanceira.util.ContaPoupancaViews;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
@@ -35,30 +36,30 @@ public abstract class Conta implements Serializable {
     @SequenceGenerator(name="Conta_Generator", sequenceName="conta_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Conta_Generator")            
     @Column(name = "conta_id", nullable = false)   
-    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private Long id;
     
     @NotNull(message = "{contaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{contaNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
-    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private int numero;
     
     @NotNull(message = "{contaSaldoNaoPodeSerNulo}")
     @Column(name = "saldo", nullable = false)
-    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private float saldo;
     
     @NotNull(message = "{contaDataDeAberturaNaoPodeSerNula}")
     @Column(name = "data_de_abertura", nullable = false)
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
-    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private Date dataDeAbertura;
         
     @JoinColumn(name = "agencia_id", referencedColumnName = "agencia_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonView(ContaCorrenteViews.ContaCorrenteSimple.class)
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private Agencia agencia;
         
     public Conta() {}

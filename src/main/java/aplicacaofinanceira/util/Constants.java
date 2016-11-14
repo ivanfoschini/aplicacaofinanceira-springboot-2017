@@ -12,11 +12,16 @@ public class Constants {
     public static final String CIDADE_ID = "cidadeId";
     public static final String CIDADE_NOME = "cidadeNome";
     
-    public static final String CONTA_CORRENTE_ID = "contaCorrenteId";
-    public static final String CONTA_CORRENTE_NUMERO = "contaCorrenteNumero";
-    public static final String CONTA_CORRENTE_DATA_DE_ABERTURA = "contaCorrenteDataDeAbertura";
-    public static final String CONTA_CORRENTE_SALDO = "contaCorrenteSaldo";
-    public static final String CONTA_CORRENTE_LIMITE = "contaCorrenteLimite";
+    public static final String CONTA_ID = "contaId";
+    public static final String CONTA_NUMERO = "contaNumero";
+    public static final String CONTA_DATA_DE_ABERTURA = "contaDataDeAbertura";
+    public static final String CONTA_SALDO = "contaSaldo";
+    
+    public static final String CONTA_CORRENTE_LIMITE = "contaLimite";
+    
+    public static final String CONTA_POUPANCA_CORRECAO_MONETARIA = "contaCorrecaoMonetaria";
+    public static final String CONTA_POUPANCA_DATA_DE_ANIVERSARIO = "contaDataDeAniversario";
+    public static final String CONTA_POUPANCA_JUROS = "contaJuros";
     
     public static final String ENDERECO_BAIRRO = "enderecoBairro";
     public static final String ENDERECO_CEP = "enderecoCep";
