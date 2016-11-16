@@ -60,6 +60,10 @@ public class Endereco implements Serializable {
     @JoinColumn(name = "cidade_id", referencedColumnName = "cidade_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Cidade cidade;
+    
+    @JoinColumn(name = "cliente_id", referencedColumnName = "cliente_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cliente cliente;
 
     public Endereco() {}
 
@@ -125,6 +129,14 @@ public class Endereco implements Serializable {
 
     public void setCidade(Cidade cidade) {
         this.cidade = cidade;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     @Override
