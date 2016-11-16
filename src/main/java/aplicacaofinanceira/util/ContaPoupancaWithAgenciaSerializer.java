@@ -25,9 +25,9 @@ public class ContaPoupancaWithAgenciaSerializer extends StdSerializer<ContaPoupa
         jgen.writeStartObject();
         jgen.writeNumberField(Constants.CONTA_ID, value.getId());
         jgen.writeNumberField(Constants.CONTA_NUMERO, value.getNumero());
-        jgen.writeStringField(Constants.CONTA_DATA_DE_ABERTURA, DateUtil.dateToString(value.getDataDeAbertura()));
+        jgen.writeStringField(Constants.CONTA_DATA_DE_ABERTURA, DateUtil.dateToString(value.getDataDeAbertura().toDate()));
         jgen.writeNumberField(Constants.CONTA_SALDO, value.getSaldo());
-        jgen.writeStringField(Constants.CONTA_POUPANCA_DATA_DE_ANIVERSARIO, DateUtil.dateToString(value.getDataDeAniversario()));
+        jgen.writeStringField(Constants.CONTA_POUPANCA_DATA_DE_ANIVERSARIO, DateUtil.dateToString(value.getDataDeAniversario().toDate()));
         jgen.writeNumberField(Constants.CONTA_POUPANCA_CORRECAO_MONETARIA, value.getCorrecaoMonetaria());
         jgen.writeNumberField(Constants.CONTA_POUPANCA_JUROS, value.getJuros());
         jgen.writeNumberField(Constants.AGENCIA_ID, value.getAgencia().getId());

@@ -25,7 +25,7 @@ public class ContaCorrenteWithAgenciaSerializer extends StdSerializer<ContaCorre
         jgen.writeStartObject();
         jgen.writeNumberField(Constants.CONTA_ID, value.getId());
         jgen.writeNumberField(Constants.CONTA_NUMERO, value.getNumero());
-        jgen.writeStringField(Constants.CONTA_DATA_DE_ABERTURA, DateUtil.dateToString(value.getDataDeAbertura()));
+        jgen.writeStringField(Constants.CONTA_DATA_DE_ABERTURA, DateUtil.dateToString(value.getDataDeAbertura().toDate()));
         jgen.writeNumberField(Constants.CONTA_SALDO, value.getSaldo());
         jgen.writeNumberField(Constants.CONTA_CORRENTE_LIMITE, value.getLimite());
         jgen.writeNumberField(Constants.AGENCIA_ID, value.getAgencia().getId());

@@ -2,10 +2,8 @@ package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ContaCorrenteViews;
 import aplicacaofinanceira.util.ContaPoupancaViews;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -19,10 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "conta")
@@ -52,10 +49,8 @@ public abstract class Conta implements Serializable {
     
     @NotNull(message = "{contaDataDeAberturaNaoPodeSerNula}")
     @Column(name = "data_de_abertura", nullable = false)
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
     @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
-    private Date dataDeAbertura;
+    private LocalDate dataDeAbertura;
         
     @JoinColumn(name = "agencia_id", referencedColumnName = "agencia_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -88,11 +83,11 @@ public abstract class Conta implements Serializable {
         this.saldo = saldo;
     }
 
-    public Date getDataDeAbertura() {
+    public LocalDate getDataDeAbertura() {
         return dataDeAbertura;
     }
 
-    public void setDataDeAbertura(Date dataDeAbertura) {
+    public void setDataDeAbertura(LocalDate dataDeAbertura) {
         this.dataDeAbertura = dataDeAbertura;
     }
 
