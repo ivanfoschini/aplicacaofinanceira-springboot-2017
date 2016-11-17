@@ -5,8 +5,10 @@ import aplicacaofinanceira.model.ClientePessoaFisica;
 import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.repository.ClientePessoaFisicaRepository;
 import aplicacaofinanceira.repository.EnderecoRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +37,12 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
 //
 //        clientePessoaFisicaRepository.delete(clientePessoaFisica);
 //    }
-//
-//    @Override
-//    public List<ClientePessoaFisica> findAll() {
-//        return clientePessoaFisicaRepository.findAll(new Sort(Sort.Direction.ASC, "numero"));
-//    }
-//
+
+    @Override
+    public List<ClientePessoaFisica> findAll() {
+        return clientePessoaFisicaRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
+    }
+
 //    @Override
 //    public ClientePessoaFisica findOne(Long id) throws NotFoundException {
 //        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaRepository.findOne(id);

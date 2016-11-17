@@ -2,12 +2,13 @@ package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.EmptyCollectionException;
 import aplicacaofinanceira.model.ClientePessoaFisica;
+import java.util.List;
 
 public interface ClientePessoaFisicaService {
 
 //    void delete(Long id) throws NotFoundException;    
-//    
-//    List<ClientePessoaFisica> findAll();
+    
+    List<ClientePessoaFisica> findAll();
 //
 //    ClientePessoaFisica findOne(Long id) throws NotFoundException;    
     

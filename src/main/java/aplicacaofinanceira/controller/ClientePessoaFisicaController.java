@@ -7,7 +7,9 @@ import aplicacaofinanceira.model.ClientePessoaFisica;
 import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.service.ClientePessoaFisicaService;
 import aplicacaofinanceira.util.ClientePessoaFisicaSerializer;
+import aplicacaofinanceira.util.ClientePessoaFisicaViews;
 import aplicacaofinanceira.validation.ValidationUtil;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,18 +44,18 @@ public class ClientePessoaFisicaController extends BaseController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-//
-//    @RequestMapping(
-//            value = "/api/clientesPessoasFisicas",
-//            method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)        
-//    public ResponseEntity<List<ClientePessoaFisica>> findAll() {
-//        List<ClientePessoaFisica> clientesPessoasFisicas = clientePessoaFisicaService.findAll();
-//
-//        return new ResponseEntity<>(clientesPessoasFisicas, HttpStatus.OK);
-//    }
-//
+
+    @RequestMapping(
+            value = "/api/clientesPessoasFisicas",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)        
+    public ResponseEntity<List<ClientePessoaFisica>> findAll() {
+        List<ClientePessoaFisica> clientesPessoasFisicas = clientePessoaFisicaService.findAll();
+
+        return new ResponseEntity<>(clientesPessoasFisicas, HttpStatus.OK);
+    }
+
 //    @RequestMapping(
 //            value = "/api/clientesPessoasFisicas/{id}",
 //            method = RequestMethod.GET,
