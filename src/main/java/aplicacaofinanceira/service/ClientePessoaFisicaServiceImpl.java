@@ -1,6 +1,7 @@
 package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.EmptyCollectionException;
+import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.model.ClientePessoaFisica;
 import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.repository.ClientePessoaFisicaRepository;
@@ -26,33 +27,33 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
     @Autowired
     private MessageSource messageSource;
 
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//    public void delete(Long id) throws NotFoundException {
-//        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaRepository.findOne(id);
-//
-//        if (clientePessoaFisica == null) {
-//            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
-//        }
-//
-//        clientePessoaFisicaRepository.delete(clientePessoaFisica);
-//    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void delete(Long id) throws NotFoundException {
+        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaRepository.findOne(id);
+
+        if (clientePessoaFisica == null) {
+            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
+        }
+
+        clientePessoaFisicaRepository.delete(clientePessoaFisica);
+    }
 
     @Override
     public List<ClientePessoaFisica> findAll() {
         return clientePessoaFisicaRepository.findAll(new Sort(Sort.Direction.ASC, "nome"));
     }
 
-//    @Override
-//    public ClientePessoaFisica findOne(Long id) throws NotFoundException {
-//        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaRepository.findOne(id);
-//
-//        if (clientePessoaFisica == null) {
-//            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
-//        }
-//
-//        return clientePessoaFisica;
-//    }
+    @Override
+    public ClientePessoaFisica findOne(Long id) throws NotFoundException {
+        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaRepository.findOne(id);
+
+        if (clientePessoaFisica == null) {
+            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
+        }
+
+        return clientePessoaFisica;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

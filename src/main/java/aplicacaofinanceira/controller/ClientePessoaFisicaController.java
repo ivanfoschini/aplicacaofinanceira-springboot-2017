@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,17 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClientePessoaFisicaController extends BaseController {
 
     @Autowired
-    private ClientePessoaFisicaService clientePessoaFisicaService;
-    
+    private ClientePessoaFisicaService clientePessoaFisicaService;    
 
-//    @RequestMapping(
-//            value = "/api/clientesPessoasFisicas/{id}",
-//            method = RequestMethod.DELETE)
-//    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
-//        clientePessoaFisicaService.delete(id);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @RequestMapping(
+            value = "/api/clientesPessoasFisicas/{id}",
+            method = RequestMethod.DELETE)
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
+        clientePessoaFisicaService.delete(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
     @RequestMapping(
             value = "/api/clientesPessoasFisicas",
@@ -56,16 +56,16 @@ public class ClientePessoaFisicaController extends BaseController {
         return new ResponseEntity<>(clientesPessoasFisicas, HttpStatus.OK);
     }
 
-//    @RequestMapping(
-//            value = "/api/clientesPessoasFisicas/{id}",
-//            method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)    
-//    public ResponseEntity<ClientePessoaFisica> findOne(@PathVariable("id") Long id) throws NotFoundException {        
-//        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaService.findOne(id);
-//
-//        return new ResponseEntity<>(clientePessoaFisica, HttpStatus.OK);        
-//    }
+    @RequestMapping(
+            value = "/api/clientesPessoasFisicas/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)    
+    public ResponseEntity<ClientePessoaFisica> findOne(@PathVariable("id") Long id) throws NotFoundException {        
+        ClientePessoaFisica clientePessoaFisica = clientePessoaFisicaService.findOne(id);
+
+        return new ResponseEntity<>(clientePessoaFisica, HttpStatus.OK);        
+    }
 
     @RequestMapping(
             value = "/api/clientesPessoasFisicas",
