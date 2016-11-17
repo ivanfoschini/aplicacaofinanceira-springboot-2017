@@ -12,6 +12,13 @@ public class Constants {
     public static final String CIDADE_ID = "cidadeId";
     public static final String CIDADE_NOME = "cidadeNome";
     
+    public static final String CLIENTE_ID = "clienteId";
+    public static final String CLIENTE_NOME = "clienteNome";
+    public static final String CLIENTE_STATUS = "clienteStatus";
+    
+    public static final String CLIENTE_PESSOA_FISICA_CPF = "clienteCpf";
+    public static final String CLIENTE_PESSOA_FISICA_RG = "clienteRg";
+    
     public static final String CONTA_ID = "contaId";
     public static final String CONTA_NUMERO = "contaNumero";
     public static final String CONTA_DATA_DE_ABERTURA = "contaDataDeAbertura";

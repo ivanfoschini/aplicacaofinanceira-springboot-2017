@@ -1,6 +1,7 @@
 package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.exception.DefaultExceptionAttributes;
+import aplicacaofinanceira.exception.EmptyCollectionException;
 import aplicacaofinanceira.exception.ExceptionAttributes;
 import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
@@ -29,6 +30,15 @@ public class BaseController {
         Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(EmptyCollectionException.class)
+    public ResponseEntity<Map<String, Object>> handleEmptyCollectionException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
     }
     
     @ExceptionHandler(Exception.class)

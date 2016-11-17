@@ -39,7 +39,7 @@ public class Cliente implements Serializable {
     
     @NotNull(message = "{clienteStatusNaoPodeSerNulo}")
     @ClienteStatus(message = "{clienteStatusInvalido}")
-    @Column(name = "status", nullable = false, length = 1)
+    @Column(name = "status", nullable = false, length = 7)
     private String status;
     
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
