@@ -1,5 +1,7 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.CorrentistaViews;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -21,14 +23,17 @@ public class Correntista implements Serializable {
     
     @NotNull
     @Column(name = "titularidade")
+    @JsonView(CorrentistaViews.CorrentistaSimple.class)
     private boolean titularidade;
     
     @JoinColumn(name = "conta_id", referencedColumnName = "conta_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView(CorrentistaViews.CorrentistaSimple.class)
     private Conta conta;
     
     @JoinColumn(name = "cliente_id", referencedColumnName = "cliente_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView(CorrentistaViews.CorrentistaSimple.class)
     private Cliente cliente;
 
     public Correntista() {}

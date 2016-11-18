@@ -2,6 +2,7 @@ package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ContaCorrenteViews;
 import aplicacaofinanceira.util.ContaPoupancaViews;
+import aplicacaofinanceira.util.CorrentistaViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
@@ -36,13 +37,13 @@ public abstract class Conta implements Serializable {
     @SequenceGenerator(name="Conta_Generator", sequenceName="conta_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Conta_Generator")            
     @Column(name = "conta_id", nullable = false)   
-    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class, CorrentistaViews.CorrentistaSimple.class})
     private Long id;
     
     @NotNull(message = "{contaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{contaNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false)
-    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
+    @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class, CorrentistaViews.CorrentistaSimple.class})
     private int numero;
     
     @NotNull(message = "{contaSaldoNaoPodeSerNulo}")
