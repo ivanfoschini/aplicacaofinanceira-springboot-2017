@@ -1,6 +1,7 @@
 package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ClientePessoaFisicaViews;
+import aplicacaofinanceira.util.ClientePessoaJuridicaViews;
 import aplicacaofinanceira.validation.ClienteStatus;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
@@ -32,19 +33,19 @@ public class Cliente implements Serializable {
     @Column(name = "cliente_id", nullable = false)
     @SequenceGenerator(name="Cliente_Generator", sequenceName="cliente_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Cliente_Generator")     
-    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)
+    @JsonView({ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class, ClientePessoaJuridicaViews.ClientePessoaJuridicaSimple.class})
     private Long id;
     
     @NotNull(message = "{clienteNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{clienteNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
-    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)
+    @JsonView({ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class, ClientePessoaJuridicaViews.ClientePessoaJuridicaSimple.class})
     private String nome;
     
     @NotNull(message = "{clienteStatusNaoPodeSerNulo}")
     @ClienteStatus(message = "{clienteStatusInvalido}")
     @Column(name = "status", nullable = false, length = 7)
-    @JsonView(ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class)
+    @JsonView({ClientePessoaFisicaViews.ClientePessoaFisicaSimple.class, ClientePessoaJuridicaViews.ClientePessoaJuridicaSimple.class})
     private String status;
     
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)

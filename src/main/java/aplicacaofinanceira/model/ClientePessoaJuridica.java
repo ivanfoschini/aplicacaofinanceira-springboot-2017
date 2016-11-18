@@ -1,6 +1,8 @@
 package aplicacaofinanceira.model;
 
+import aplicacaofinanceira.util.ClientePessoaJuridicaViews;
 import aplicacaofinanceira.validation.Cnpj;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -14,6 +16,7 @@ public class ClientePessoaJuridica extends Cliente implements Serializable {
     @NotNull(message = "{clientePessoaJuridicaCnpjNaoPodeSerNulo}")
     @Cnpj(message = "{clientePessoaJuridicaCnpjInvalido}")
     @Column(name = "cnpj", length = 14)
+    @JsonView(ClientePessoaJuridicaViews.ClientePessoaJuridicaSimple.class)
     private String cnpj;
 
     public String getCnpj() {

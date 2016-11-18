@@ -19,6 +19,8 @@ public class Constants {
     public static final String CLIENTE_PESSOA_FISICA_CPF = "clienteCpf";
     public static final String CLIENTE_PESSOA_FISICA_RG = "clienteRg";
     
+    public static final String CLIENTE_PESSOA_JURIDICA_CNPJ = "clienteCnpj";
+    
     public static final String CONTA_ID = "contaId";
     public static final String CONTA_NUMERO = "contaNumero";
     public static final String CONTA_DATA_DE_ABERTURA = "contaDataDeAbertura";
