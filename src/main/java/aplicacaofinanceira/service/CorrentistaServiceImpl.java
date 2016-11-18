@@ -76,6 +76,16 @@ public class CorrentistaServiceImpl implements CorrentistaService {
 
         return correntistas;
     }
+    
+    @Override
+    public List<Correntista> findByCliente(Long clienteId) {
+        return correntistaRepository.findByCliente(clienteId);
+    }
+    
+    @Override
+    public List<Correntista> findByConta(Long contaId) {
+        return correntistaRepository.findByConta(contaId);
+    }
 
     private boolean hasDifferentAccounts(List<Correntista> correntistas) {
         List<Conta> contas = new ArrayList<>();
@@ -125,5 +135,5 @@ public class CorrentistaServiceImpl implements CorrentistaService {
         }
 
         return titulares.isEmpty() ? true : false;
-    }    
+    }
 }

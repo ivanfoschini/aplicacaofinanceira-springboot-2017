@@ -13,4 +13,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 public interface CorrentistaService {
 
     List<Correntista> associate(List<CorrentistaJson> correntistasJson) throws DifferentAccountsException, HttpMessageNotReadableException, MoreThanOneAccountClientException, MoreThanOneAccountOwnershipException, NoAccountOwnershipException, NotFoundException;    
+    
+    List<Correntista> findByCliente(Long clienteId);
+
+    List<Correntista> findByConta(Long contaId);
 }
