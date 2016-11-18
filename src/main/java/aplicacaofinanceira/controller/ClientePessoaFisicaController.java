@@ -91,24 +91,29 @@ public class ClientePessoaFisicaController extends BaseController {
         }
     }
 
-//    @RequestMapping(
-//            value = "/api/clientesPessoasFisicas/{id}",
-//            method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid ClientePessoaFisica clientePessoaFisica, BindingResult bindingResult) throws EmptyCollectionException, JsonProcessingException, NotFoundException, ValidationException {
-//        if (bindingResult.hasErrors()) {
-//            ValidationUtil.handleValidationErrors(bindingResult);
-//            
-//            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-//        } else {
-//            ClientePessoaFisica updatedClientePessoaFisica = clientePessoaFisicaService.update(id, clientePessoaFisica);
-//            
-//            Agencia agencia = agenciaService.findOne(updatedClientePessoaFisica.getAgencia().getId());
-//
-//            return new ResponseEntity<>(ClientePessoaFisicaWithAgenciaSerializer.serializeClientePessoaFisicaWithAgencia(updatedClientePessoaFisica, agencia), HttpStatus.OK);
-//        }
-//    }
+    @RequestMapping(
+            value = "/api/clientesPessoasFisicas/{id}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid ClientePessoaFisica clientePessoaFisica, BindingResult bindingResultClientePessoaFisica) throws EmptyCollectionException, JsonProcessingException, NotFoundException, ValidationException {
+        List<FieldError> enderecosFieldErrors = validateEnderecos(clientePessoaFisica.getEnderecos());
+        
+        if (bindingResultClientePessoaFisica.hasErrors() || !enderecosFieldErrors.isEmpty()) {
+            List<FieldError> fieldErrors = new ArrayList<>(); 
+            
+            fieldErrors.addAll(bindingResultClientePessoaFisica.getFieldErrors());
+            fieldErrors.addAll(enderecosFieldErrors);
+            
+            ValidationUtil.handleValidationErrors(fieldErrors);
+            
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        } else {
+            ClientePessoaFisica updatedClientePessoaFisica = clientePessoaFisicaService.update(id, clientePessoaFisica);
+            
+            return new ResponseEntity<>(ClientePessoaFisicaSerializer.serializeClientePessoaFisica(updatedClientePessoaFisica), HttpStatus.OK);
+        }
+    }
     
     private List<FieldError> validateEnderecos(Collection<Endereco> enderecos) {
         List<FieldError> enderecoFieldErrors = new ArrayList<>();  

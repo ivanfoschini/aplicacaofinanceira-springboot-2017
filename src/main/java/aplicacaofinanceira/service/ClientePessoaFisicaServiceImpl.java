@@ -72,25 +72,35 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
         return savedClientePessoaFisica;
     }
 
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//    public ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws NotFoundException, NotUniqueException {
-//        ClientePessoaFisica clientePessoaFisicaToUpdate = findOne(id);
-//
-//        if (clientePessoaFisicaToUpdate == null) {
-//            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
-//        }
-//        
-//        if (!isNumberUnique(clientePessoaFisica.getNumero(), clientePessoaFisicaToUpdate.getId())) {
-//            throw new NotUniqueException(messageSource.getMessage("clienteNumeroDeveSerUnico", null, null));
-//        }
-//
-//        clientePessoaFisicaToUpdate.setNumero(clientePessoaFisica.getNumero());
-//        clientePessoaFisicaToUpdate.setSaldo(clientePessoaFisica.getSaldo());
-//        clientePessoaFisicaToUpdate.setDataDeAbertura(clientePessoaFisica.getDataDeAbertura());
-//        clientePessoaFisicaToUpdate.setLimite(clientePessoaFisica.getLimite());
-//        clientePessoaFisicaToUpdate.setAgencia(clientePessoaFisica.getAgencia());
-//
-//        return clientePessoaFisicaRepository.save(clientePessoaFisicaToUpdate);
-//    }    
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException {
+        if (clientePessoaFisica.getEnderecos().isEmpty()) {
+            throw new EmptyCollectionException(messageSource.getMessage("clienteSemEnderecos", null, null));
+        }
+        
+        ClientePessoaFisica clientePessoaFisicaToUpdate = findOne(id);
+
+        if (clientePessoaFisicaToUpdate == null) {
+            throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
+        }
+        
+        clientePessoaFisicaToUpdate.setNome(clientePessoaFisica.getNome());
+        clientePessoaFisicaToUpdate.setStatus(clientePessoaFisica.getStatus());
+        clientePessoaFisicaToUpdate.setRg(clientePessoaFisica.getRg());
+        clientePessoaFisicaToUpdate.setCpf(clientePessoaFisica.getCpf());
+        
+        for (Endereco endereco: clientePessoaFisicaToUpdate.getEnderecos()) {
+            enderecoRepository.delete(endereco);
+        }
+        
+        ClientePessoaFisica updatedPessoaFisica = clientePessoaFisicaRepository.save(clientePessoaFisicaToUpdate);
+        
+        for (Endereco endereco: clientePessoaFisica.getEnderecos()) {
+            endereco.setCliente(clientePessoaFisicaToUpdate);
+            enderecoRepository.save(endereco);
+        }
+
+        return updatedPessoaFisica;
+    }    
 }

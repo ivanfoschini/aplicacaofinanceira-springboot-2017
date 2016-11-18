@@ -15,5 +15,5 @@ public interface ClientePessoaFisicaService {
     
     ClientePessoaFisica insert(ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException;        
     
-//    ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws NotFoundException, NotUniqueException;    
+    ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException;    
 }
