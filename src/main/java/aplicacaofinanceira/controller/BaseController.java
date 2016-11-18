@@ -1,8 +1,12 @@
 package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.exception.DefaultExceptionAttributes;
+import aplicacaofinanceira.exception.DifferentAccountsException;
 import aplicacaofinanceira.exception.EmptyCollectionException;
 import aplicacaofinanceira.exception.ExceptionAttributes;
+import aplicacaofinanceira.exception.MoreThanOneAccountClientException;
+import aplicacaofinanceira.exception.MoreThanOneAccountOwnershipException;
+import aplicacaofinanceira.exception.NoAccountOwnershipException;
 import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
@@ -32,6 +36,15 @@ public class BaseController {
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
     
+    @ExceptionHandler(DifferentAccountsException.class)
+    public ResponseEntity<Map<String, Object>> handleDifferentAccountsException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
     @ExceptionHandler(EmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleEmptyCollectionException(Exception exception, HttpServletRequest request) {
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
@@ -58,7 +71,34 @@ public class BaseController {
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }    
+    
+    @ExceptionHandler(MoreThanOneAccountClientException.class)
+    public ResponseEntity<Map<String, Object>> handleMoreThanOneAccountClientException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
 
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
+    @ExceptionHandler(MoreThanOneAccountOwnershipException.class)
+    public ResponseEntity<Map<String, Object>> handleMoreThanOneAccountOwnershipException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
+    @ExceptionHandler(NoAccountOwnershipException.class)
+    public ResponseEntity<Map<String, Object>> handleNoAccountOwnershipException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(exception.getMessage(), exception, request, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
     @ExceptionHandler(NotEmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleNotEmptyCollectionException(Exception exception, HttpServletRequest request) {
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();

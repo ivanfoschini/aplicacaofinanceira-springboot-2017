@@ -33,17 +33,11 @@ public class Correntista implements Serializable {
 
     public Correntista() {}
 
-    public Correntista(CorrentistaPK correntistaPK) {
-        this.correntistaPK = correntistaPK;
-    }
-
-    public Correntista(CorrentistaPK correntistaPK, boolean titularidade) {
+    public Correntista(CorrentistaPK correntistaPK, boolean titularidade, Conta conta, Cliente cliente) {
         this.correntistaPK = correntistaPK;
         this.titularidade = titularidade;
-    }
-
-    public Correntista(long contaId, long clienteId) {
-        this.correntistaPK = new CorrentistaPK(contaId, clienteId);
+        this.conta = conta;
+        this.cliente = cliente;
     }
 
     public CorrentistaPK getCorrentistaPK() {

@@ -1,5 +1,9 @@
 package aplicacaofinanceira.controller;
 
+import aplicacaofinanceira.exception.DifferentAccountsException;
+import aplicacaofinanceira.exception.MoreThanOneAccountClientException;
+import aplicacaofinanceira.exception.MoreThanOneAccountOwnershipException;
+import aplicacaofinanceira.exception.NoAccountOwnershipException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.model.Correntista;
 import aplicacaofinanceira.service.CorrentistaService;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +32,7 @@ public class CorrentistaController extends BaseController {
             produces = MediaType.APPLICATION_JSON_VALUE)
 //    @JsonView(BancoViews.BancoSimple.class)
 //    public ResponseEntity<Object> associate(@RequestBody @Valid List<Correntista> correntistas, BindingResult bindingResult) throws ValidationException  {
-    public ResponseEntity<Object> associate(@RequestBody List<CorrentistaJson> correntistasJson) throws NotFoundException {
+    public void associate(@RequestBody List<CorrentistaJson> correntistasJson) throws DifferentAccountsException, HttpMessageNotReadableException, MoreThanOneAccountClientException, MoreThanOneAccountOwnershipException, NoAccountOwnershipException, NotFoundException {
 //        if (bindingResult.hasErrors()) {
 //            ValidationUtil.handleValidationErrors(bindingResult);
 //            
@@ -35,7 +40,7 @@ public class CorrentistaController extends BaseController {
 //        } else {            
             List<Correntista> savedCorrentistas = correntistaService.associate(correntistasJson);
 
-            return new ResponseEntity<>(savedCorrentistas, HttpStatus.CREATED);            
+//            return new ResponseEntity<>(savedCorrentistas, HttpStatus.CREATED);            
 //        }
     }
 }
