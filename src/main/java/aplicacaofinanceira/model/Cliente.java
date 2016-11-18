@@ -6,6 +6,7 @@ import aplicacaofinanceira.validation.ClienteStatus;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -50,6 +51,9 @@ public class Cliente implements Serializable {
     
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private Collection<Endereco> enderecos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente", fetch = FetchType.LAZY)
+    private Collection<Correntista> correntistas;
 
     public Cliente() {}   
 
@@ -83,6 +87,14 @@ public class Cliente implements Serializable {
 
     public void setEnderecos(Collection<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+
+    public Collection<Correntista> getCorrentistas() {
+        return correntistas;
+    }
+
+    public void setCorrentistas(Collection<Correntista> correntistas) {
+        this.correntistas = correntistas;
     }
     
     @Override
