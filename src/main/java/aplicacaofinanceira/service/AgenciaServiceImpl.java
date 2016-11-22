@@ -57,7 +57,7 @@ public class AgenciaServiceImpl implements AgenciaService {
             throw new NotUniqueException(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null));
         }
 
-        Agencia savedAgencia = agenciaRepository.saveAndFlush(agencia);
+        Agencia savedAgencia = agenciaRepository.save(agencia);
 
         return savedAgencia;
     }
