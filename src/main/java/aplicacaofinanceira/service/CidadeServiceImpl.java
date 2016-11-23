@@ -1,5 +1,6 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
@@ -24,11 +25,15 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         Cidade cidade = cidadeRepository.findOne(id);
 
         if (cidade == null) {
             throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
+        }
+        
+        if (!cidade.getEnderecos().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("cidadePossuiEnderecos", null, null));
         }
 
         cidadeRepository.delete(cidade);
