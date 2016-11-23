@@ -2,10 +2,7 @@ package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ContaCorrenteViews;
 import aplicacaofinanceira.util.ContaPoupancaViews;
-<<<<<<< HEAD
 import aplicacaofinanceira.util.CorrentistaViews;
-=======
->>>>>>> cliente
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
