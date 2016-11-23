@@ -1,5 +1,6 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Agencia;
@@ -24,11 +25,15 @@ public class AgenciaServiceImpl implements AgenciaService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         Agencia agencia = agenciaRepository.findOne(id);
 
         if (agencia == null) {
             throw new NotFoundException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
+        }
+        
+        if (!agencia.getContas().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("agenciaPossuiContas", null, null));
         }
 
         agenciaRepository.delete(agencia);

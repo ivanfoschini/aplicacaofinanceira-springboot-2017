@@ -1,5 +1,6 @@
 package aplicacaofinanceira.controller;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.exception.ValidationException;
@@ -55,7 +56,7 @@ public class AgenciaController extends BaseController {
     @RequestMapping(
             value = "/api/agencias/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotEmptyCollectionException, NotFoundException {
         agenciaService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
