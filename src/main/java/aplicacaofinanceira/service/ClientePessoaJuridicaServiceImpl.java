@@ -1,6 +1,7 @@
 package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.EmptyCollectionException;
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.model.ClientePessoaJuridica;
 import aplicacaofinanceira.model.Endereco;
@@ -29,11 +30,15 @@ public class ClientePessoaJuridicaServiceImpl implements ClientePessoaJuridicaSe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         ClientePessoaJuridica clientePessoaJuridica = clientePessoaJuridicaRepository.findOne(id);
 
         if (clientePessoaJuridica == null) {
             throw new NotFoundException(messageSource.getMessage("clienteNaoEncontrado", null, null));
+        }
+        
+        if (!clientePessoaJuridica.getCorrentistas().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("clienteEhCorrentista", null, null));
         }
 
         clientePessoaJuridicaRepository.delete(clientePessoaJuridica);
