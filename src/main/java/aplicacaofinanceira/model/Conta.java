@@ -3,6 +3,7 @@ package aplicacaofinanceira.model;
 import aplicacaofinanceira.util.ContaCorrenteViews;
 import aplicacaofinanceira.util.ContaPoupancaViews;
 import aplicacaofinanceira.util.CorrentistaViews;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
@@ -53,6 +54,7 @@ public abstract class Conta implements Serializable {
     
     @NotNull(message = "{contaDataDeAberturaNaoPodeSerNula}")
     @Column(name = "data_de_abertura", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private LocalDate dataDeAbertura;
         
