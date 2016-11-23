@@ -1,6 +1,7 @@
 package aplicacaofinanceira.controller;
 
 import aplicacaofinanceira.exception.EmptyCollectionException;
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.ValidationException;
 import aplicacaofinanceira.model.ClientePessoaFisica;
@@ -39,7 +40,7 @@ public class ClientePessoaFisicaController extends BaseController {
     @RequestMapping(
             value = "/api/clientesPessoasFisicas/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) throws NotEmptyCollectionException, NotFoundException {
         clientePessoaFisicaService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

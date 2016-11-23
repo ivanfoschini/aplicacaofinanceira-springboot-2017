@@ -1,5 +1,6 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Conta;
@@ -25,11 +26,15 @@ public class ContaPoupancaServiceImpl implements ContaPoupancaService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotEmptyCollectionException, NotFoundException {
         ContaPoupanca contaPoupanca = contaPoupancaRepository.findOne(id);
 
         if (contaPoupanca == null) {
             throw new NotFoundException(messageSource.getMessage("contaNaoEncontrada", null, null));
+        }
+        
+        if (!contaPoupanca.getCorrentistas().isEmpty()) {
+            throw new NotEmptyCollectionException(messageSource.getMessage("contaPossuiCorrentista", null, null));
         }
 
         contaPoupancaRepository.delete(contaPoupanca);
