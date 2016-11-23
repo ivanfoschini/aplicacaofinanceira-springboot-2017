@@ -1,5 +1,6 @@
 package aplicacaofinanceira.service;
 
+import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Agencia;
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface AgenciaService {
     
-    void delete(Long id) throws NotFoundException;    
+    void delete(Long id) throws NotEmptyCollectionException, NotFoundException;    
     
     List<Agencia> findAll();
 
