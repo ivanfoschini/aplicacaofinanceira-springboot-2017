@@ -1,6 +1,7 @@
 package aplicacaofinanceira.model;
 
 import aplicacaofinanceira.util.ContaPoupancaViews;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ public class ContaPoupanca extends Conta implements Serializable {
     
     @NotNull(message = "{contaPoupancaDataDeAniversarioNaoPodeSerNula}")
     @Column(name = "data_de_aniversario", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     @JsonView(ContaPoupancaViews.ContaPoupancaSimple.class)
     private LocalDate dataDeAniversario;
     
