@@ -35,7 +35,7 @@ public class Agencia implements Serializable {
     
     @NotNull(message = "{agenciaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{agenciaNumeroDeveSerMaiorDoQueZero}")
-    @Column(name = "numero", nullable = false)
+    @Column(name = "numero", nullable = false, unique = true)
     @JsonView(AgenciaViews.AgenciaSimple.class)
     private int numero;
     
