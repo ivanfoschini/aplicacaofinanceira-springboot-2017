@@ -30,7 +30,7 @@ public class Banco implements Serializable {
     
     @NotNull(message = "{bancoNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{bancoNumeroDeveSerMaiorDoQueZero}")
-    @Column(name = "numero", nullable = false)
+    @Column(name = "numero", nullable = false, unique = true)
     @JsonView(BancoViews.BancoSimple.class)
     private Integer numero;
     
