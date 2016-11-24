@@ -39,7 +39,7 @@ public abstract class Conta implements Serializable {
     
     @NotNull(message = "{contaNumeroNaoPodeSerNulo}")
     @Min(value = 1, message = "{contaNumeroDeveSerMaiorDoQueZero}")
-    @Column(name = "numero", nullable = false)
+    @Column(name = "numero", nullable = false, unique = true)
     @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private int numero;
     
