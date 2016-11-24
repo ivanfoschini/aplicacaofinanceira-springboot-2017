@@ -32,7 +32,7 @@ public class Estado implements Serializable {
     
     @NotNull(message = "{estadoNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
-    @Column(name = "nome", nullable = false, length = 255)
+    @Column(name = "nome", nullable = false, length = 255, unique = true)
     @JsonView(EstadoViews.EstadoSimple.class)
     private String nome;
     
