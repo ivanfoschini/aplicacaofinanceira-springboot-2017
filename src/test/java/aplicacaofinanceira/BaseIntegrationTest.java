@@ -18,7 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @WebAppConfiguration
-public abstract class AbstractControllerTest {
+public abstract class BaseIntegrationTest {
 
     protected MockMvc mockMvc;
 
