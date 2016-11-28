@@ -9,6 +9,7 @@ public class ErrorResponse {
     private int status;
     private String reason;
     private String exception;
+    private String message;
     private List<String> messages = new LinkedList<>();    
     private String path;
 
@@ -26,6 +27,10 @@ public class ErrorResponse {
 
     public String getException() {
         return exception;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public List<String> getMessages() {

@@ -12,6 +12,15 @@ public class BancoTestUtil {
     
     public static final int SAVE_SEM_CAMPOS_OBRIGATORIOS_MESSAGE_LIST_ERRORS_SIZE = 4;
     
+    public static Banco bancoComCnpjInvalido() {
+        Banco banco = new Banco();
+        banco.setNumero(BANCO_NUMERO);
+        banco.setCnpj("11111111111111");
+        banco.setNome(BANCO_NOME);
+        
+        return banco;
+    }
+    
     public static Banco bancoComNumeroMenorDoQueUm() {
         Banco banco = new Banco();
         banco.setNumero(0);

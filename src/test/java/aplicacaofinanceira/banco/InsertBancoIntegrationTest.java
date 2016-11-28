@@ -2,6 +2,7 @@ package aplicacaofinanceira.banco;
 
 import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Banco;
+import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.util.BancoTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.TestUtil;
@@ -13,7 +14,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class InsertBancoIntegrationTest extends BaseIntegrationTest {
 
     private String uri = BancoTestUtil.BANCOS_URI;
+    
+    @Autowired
+    private BancoRepository bancoRepository;
     
     @Autowired
     private MessageSource messageSource;
@@ -141,29 +144,53 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerMaiorDoQueZero", null, null), errorResponse.getMessages().get(0));
     }
     
-//    @Test
-//    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "src/test/resources/insertBanco.sql")
-//    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "src/test/resources/deleteBanco.sql")
-//    public void testSaveComNumeroDuplicado() throws Exception {
-//        Banco banco = BancoTestUtil.bancoValido();
-//        
-//        String inputJson = super.mapToJson(banco);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-//        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerUnico", null, null), errorResponse.getMessages().get(0));
-//    }
+    @Test
+    public void testSaveComNumeroDuplicado() throws Exception {
+        Banco banco = BancoTestUtil.bancoValido();
+        
+        bancoRepository.save(banco);
+        
+        String inputJson = super.mapToJson(banco);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerUnico", null, null), errorResponse.getMessage());
+    }
+    
+    @Test
+    public void testSaveComCnpjInvalido() throws Exception {
+        Banco banco = BancoTestUtil.bancoComCnpjInvalido();
+        
+        String inputJson = super.mapToJson(banco);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(0));
+    }
 }

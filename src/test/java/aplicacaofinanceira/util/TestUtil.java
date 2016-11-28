@@ -4,6 +4,7 @@ import org.springframework.util.Base64Utils;
 
 public class TestUtil {
 
+    public final static String NOT_UNIQUE_EXCEPTION = "aplicacaofinanceira.exception.NotUniqueException";
     public final static String VALIDATION_EXCEPTION = "aplicacaofinanceira.exception.ValidationException";
 
     public static String getAdminAuthorization() {
