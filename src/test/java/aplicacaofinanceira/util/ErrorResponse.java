@@ -1,6 +1,6 @@
 package aplicacaofinanceira.util;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ErrorResponse {
@@ -10,7 +10,7 @@ public class ErrorResponse {
     private String reason;
     private String exception;
     private String message;
-    private List<String> messages = new LinkedList<>();    
+    private List<String> messages = new ArrayList<>();    
     private String path;
 
     public String getTimestamp() {

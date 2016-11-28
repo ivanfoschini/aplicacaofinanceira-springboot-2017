@@ -2,9 +2,11 @@ package aplicacaofinanceira;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.List;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,8 +39,15 @@ public abstract class BaseIntegrationTest {
         return objectMapper.writeValueAsString(object);
     }
 
-    protected <T> T mapFromJson(String json, Class<T> clazz) throws JsonParseException, JsonMappingException, IOException {
+    protected <T> T mapFromJsonObject(String json, Class<T> clazz) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, clazz);
+    }
+    
+    protected <T> T mapFromJsonArray(String array) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();        
+        TypeReference<List<Object>> mapType = new TypeReference<List<Object>>() {};
+    	
+        return objectMapper.readValue(array, mapType);        
     }
 }

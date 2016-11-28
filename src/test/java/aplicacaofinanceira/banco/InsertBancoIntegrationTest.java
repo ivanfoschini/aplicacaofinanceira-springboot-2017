@@ -36,7 +36,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testSaveComUsuarioNaoAutorizado() throws Exception {
-        Banco banco = BancoTestUtil.bancoValido();
+        Banco banco = BancoTestUtil.bancoDoBrasil();
         
         String inputJson = super.mapToJson(banco);
 
@@ -55,7 +55,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testSaveComUsuarioComCredenciaisIncorretas() throws Exception {
-        Banco banco = BancoTestUtil.bancoValido();
+        Banco banco = BancoTestUtil.bancoDoBrasil();
         
         String inputJson = super.mapToJson(banco);
 
@@ -89,11 +89,14 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(BancoTestUtil.SAVE_SEM_CAMPOS_OBRIGATORIOS_MESSAGE_LIST_ERRORS_SIZE, errorResponse.getMessages().size());
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjNaoPodeSerNulo", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(1));
+        Assert.assertEquals(messageSource.getMessage("bancoNomeNaoPodeSerNulo", null, null), errorResponse.getMessages().get(2));
+        Assert.assertEquals(messageSource.getMessage("bancoNumeroNaoPodeSerNulo", null, null), errorResponse.getMessages().get(3));
     }
     
     @Test
@@ -113,7 +116,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
@@ -122,7 +125,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testSaveComNumeroDuplicado() throws Exception {
-        Banco banco = BancoTestUtil.bancoValido();
+        Banco banco = BancoTestUtil.bancoDoBrasil();
         
         bancoRepository.save(banco);
         
@@ -139,11 +142,13 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerUnico", null, null), errorResponse.getMessage());
+        
+        bancoRepository.delete(banco);
     }
     
     @Test
@@ -163,7 +168,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
@@ -187,7 +192,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
@@ -211,7 +216,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
@@ -220,7 +225,7 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testSaveComSucesso() throws Exception {
-        Banco banco = BancoTestUtil.bancoValido();
+        Banco banco = BancoTestUtil.bancoDoBrasil();
         
         String inputJson = super.mapToJson(banco);
 
@@ -235,10 +240,12 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        Banco savedBanco = super.mapFromJson(content, Banco.class);        
+        Banco savedBanco = super.mapFromJsonObject(content, Banco.class);        
         banco.setId(savedBanco.getId());
         
         Assert.assertEquals(HttpStatus.CREATED.value(), status);
         Assert.assertEquals(banco, savedBanco);
+        
+        bancoRepository.delete(savedBanco);
     }
 }

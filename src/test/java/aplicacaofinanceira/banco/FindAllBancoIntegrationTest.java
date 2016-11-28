@@ -1,9 +1,11 @@
 package aplicacaofinanceira.banco;
 
 import aplicacaofinanceira.BaseIntegrationTest;
+import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.util.BancoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +24,6 @@ public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private BancoRepository bancoRepository;
     
-    @Autowired
-    private MessageSource messageSource;
-    
     @Before
     public void setUp() {
         super.setUp();
@@ -32,17 +31,68 @@ public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testFindAllComUsuarioNaoAutorizado() throws Exception {
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.get(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getFuncionarioAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        
-//        Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
-Assert.assertEquals(true, true);
+        Banco banco = BancoTestUtil.bancoDoBrasil();
+        
+        bancoRepository.save(banco);
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.get(uri)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getFuncionarioAuthorization()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        
+        Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
+        
+        bancoRepository.delete(banco);
     }    
+    
+    @Test
+    public void testFindAllComUsuarioComCredenciaisIncorretas() throws Exception {
+        Banco banco = BancoTestUtil.bancoDoBrasil();
+        
+        bancoRepository.save(banco);
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.get(uri)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
+        
+        bancoRepository.delete(banco);
+    }
+    
+    @Test
+    public void testFindAllComSucesso() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
+        Banco caixaEconomicaFederal = BancoTestUtil.caixaEconomicaFederal();
+        Banco itau = BancoTestUtil.itau();
+        
+        bancoRepository.save(bancoDoBrasil);
+        bancoRepository.save(caixaEconomicaFederal);
+        bancoRepository.save(itau);
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.get(uri)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();
+        
+        List<Object> listSuccessResponse = super.mapFromJsonArray(content);
+        
+        bancoRepository.delete(bancoDoBrasil);
+        bancoRepository.delete(caixaEconomicaFederal);
+        bancoRepository.delete(itau);
+        
+        Assert.assertEquals(HttpStatus.OK.value(), status);
+        Assert.assertTrue(listSuccessResponse.size() == 3);        
+    }
 }
