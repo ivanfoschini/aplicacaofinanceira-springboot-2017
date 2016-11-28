@@ -73,30 +73,6 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }  
     
     @Test
-    public void testSaveComSucesso() throws Exception {
-        Banco banco = BancoTestUtil.bancoValido();
-        
-        String inputJson = super.mapToJson(banco);
-
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-                        .content(inputJson))                
-                .andReturn();
-
-        int status = result.getResponse().getStatus();
-        String content = result.getResponse().getContentAsString();        
-
-        Banco savedBanco = super.mapFromJson(content, Banco.class);        
-        banco.setId(savedBanco.getId());
-        
-        Assert.assertEquals(HttpStatus.CREATED.value(), status);
-        Assert.assertEquals(banco, savedBanco);
-    }    
-    
-    @Test
     public void testSaveSemCamposObrigatorios() throws Exception {
         Banco banco = BancoTestUtil.bancoSemCamposObrigatorios();
         
@@ -192,5 +168,77 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(0));
+    }
+    
+    @Test
+    public void testSaveComNomeComMenosDeDoisCaracteres() throws Exception {
+        Banco banco = BancoTestUtil.bancoComNomeComMenosDeDoisCaracteres();
+        
+        String inputJson = super.mapToJson(banco);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+    }
+    
+    @Test
+    public void testSaveComNomeComMaisDeDuzentosECinquentaECincoCaracteres() throws Exception {
+        Banco banco = BancoTestUtil.bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres();
+        
+        String inputJson = super.mapToJson(banco);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponse errorResponse = super.mapFromJson(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+    }
+    
+    @Test
+    public void testSaveComSucesso() throws Exception {
+        Banco banco = BancoTestUtil.bancoValido();
+        
+        String inputJson = super.mapToJson(banco);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        Banco savedBanco = super.mapFromJson(content, Banco.class);        
+        banco.setId(savedBanco.getId());
+        
+        Assert.assertEquals(HttpStatus.CREATED.value(), status);
+        Assert.assertEquals(banco, savedBanco);
     }
 }

@@ -20,6 +20,24 @@ public class BancoTestUtil {
         
         return banco;
     }
+        
+    public static Banco bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres() {
+        Banco banco = new Banco();
+        banco.setNumero(BANCO_NUMERO);
+        banco.setCnpj(BANCO_CNPJ);
+        banco.setNome("123456789D123456789V123456789T123456789Q123456789C123456789S123456789S123456789O123456789N123456789C123456789D123456789V123456789T123456789Q123456789C123456789S123456789S123456789O123456789N123456789D123456789D123456789V123456789T123456789Q123456789C123456789S123456789S123456789O123456789N123456789C123456");
+        
+        return banco;
+    }
+    
+    public static Banco bancoComNomeComMenosDeDoisCaracteres() {
+        Banco banco = new Banco();
+        banco.setNumero(BANCO_NUMERO);
+        banco.setCnpj(BANCO_CNPJ);
+        banco.setNome("b");
+        
+        return banco;
+    }
     
     public static Banco bancoComNumeroMenorDoQueUm() {
         Banco banco = new Banco();
