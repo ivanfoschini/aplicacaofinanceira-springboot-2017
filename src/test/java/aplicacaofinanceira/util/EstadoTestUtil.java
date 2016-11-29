@@ -6,11 +6,27 @@ public class EstadoTestUtil {
     
     public static final String ESTADOS_URI = "/api/estados";
     
-    private static final String ESTADO_NOME = "Sao Paulo";
+    private static final String MINAS_GERAIS_NOME = "Minas Gerais";
+    private static final String RIO_DE_JANEIRO_NOME = "Rio de Janeiro";
+    private static final String SAO_PAULO_NOME = "Sao Paulo";
+    
+    public static Estado minasGerais() {
+        Estado estado = new Estado();
+        estado.setNome(MINAS_GERAIS_NOME);
+        
+        return estado;
+    }
+    
+    public static Estado rioDeJaneiro() {
+        Estado estado = new Estado();
+        estado.setNome(RIO_DE_JANEIRO_NOME);
+        
+        return estado;
+    }
     
     public static Estado saoPaulo() {
         Estado estado = new Estado();
-        estado.setNome(ESTADO_NOME);
+        estado.setNome(SAO_PAULO_NOME);
         
         return estado;
     }
