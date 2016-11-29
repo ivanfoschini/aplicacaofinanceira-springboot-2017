@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class FindOneIntegrationTest extends BaseIntegrationTest {
 
-    private String uri = BancoTestUtil.BANCOS_URI + BancoTestUtil.ID_COMPLEMENT_URI;
+    private String uri = BancoTestUtil.BANCOS_URI + TestUtil.ID_COMPLEMENT_URI;
     
     @Autowired
     private BancoRepository bancoRepository;

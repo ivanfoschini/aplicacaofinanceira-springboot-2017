@@ -9,7 +9,9 @@ public class TestUtil {
     public static final String NOT_UNIQUE_EXCEPTION = "aplicacaofinanceira.exception.NotUniqueException";
     public static final String VALIDATION_EXCEPTION = "aplicacaofinanceira.exception.ValidationException";
     
-    public final static int DEFAULT_SUCCESS_LIST_SIZE = 3;
+    public static final String ID_COMPLEMENT_URI = "/{id}";
+    
+    public final static int DEFAULT_SUCCESS_LIST_SIZE = 3;    
 
     public static String getAdminAuthorization() {
         return "Basic " + Base64Utils.encodeToString("admin:admin".getBytes());

@@ -4,6 +4,8 @@ import aplicacaofinanceira.model.Banco;
 
 public class BancoTestUtil {
 
+    public static final String BANCOS_URI = "/api/bancos";
+    
     private static final String BANCO_DO_BRASIL_CNPJ = "00000000000191";
     private static final String BANCO_DO_BRASIL_NOME = "Banco do Brasil";
     private static final Integer BANCO_DO_BRASIL_NUMERO = 1;
@@ -15,10 +17,6 @@ public class BancoTestUtil {
     private static final String ITAU_CNPJ = "60872504000123";
     private static final String ITAU_NOME = "Itau";
     private static final Integer ITAU_NUMERO = 3;
-    
-    public static final String BANCOS_URI = "/api/bancos";    
-    
-    public static final String ID_COMPLEMENT_URI = "/{id}";
     
     public static Banco bancoDoBrasil() {
         Banco banco = new Banco();

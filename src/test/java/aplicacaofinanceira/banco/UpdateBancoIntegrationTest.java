@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UpdateBancoIntegrationTest extends BaseIntegrationTest {
 
-    private String uri = BancoTestUtil.BANCOS_URI + BancoTestUtil.ID_COMPLEMENT_URI;
+    private String uri = BancoTestUtil.BANCOS_URI + TestUtil.ID_COMPLEMENT_URI;
     
     @Autowired
     private BancoRepository bancoRepository;
