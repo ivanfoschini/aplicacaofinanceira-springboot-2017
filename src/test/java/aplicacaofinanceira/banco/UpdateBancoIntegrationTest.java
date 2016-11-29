@@ -19,9 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class InsertBancoIntegrationTest extends BaseIntegrationTest {
+public class UpdateBancoIntegrationTest extends BaseIntegrationTest {
 
-    private String uri = BancoTestUtil.BANCOS_URI;
+    private String uri = BancoTestUtil.BANCOS_URI + BancoTestUtil.ID_COMPLEMENT_URI;
     
     @Autowired
     private BancoRepository bancoRepository;
@@ -35,13 +35,17 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComUsuarioNaoAutorizado() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+    public void testUpdateComUsuarioNaoAutorizado() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        String inputJson = super.mapToJson(bancoDoBrasil);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getFuncionarioAuthorization())
@@ -54,13 +58,17 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testSaveComUsuarioComCredenciaisIncorretas() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+    public void testUpdateComUsuarioComCredenciaisIncorretas() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        String inputJson = super.mapToJson(bancoDoBrasil);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword())
@@ -73,13 +81,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }  
     
     @Test
-    public void testSaveSemCamposObrigatorios() throws Exception {
-        Banco banco = BancoTestUtil.bancoSemCamposObrigatorios();
+    public void testUpdateSemCamposObrigatorios() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco bancoSemCamposObrigatorios = BancoTestUtil.bancoSemCamposObrigatorios();
+        
+        String inputJson = super.mapToJson(bancoSemCamposObrigatorios);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -100,13 +114,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComNumeroMenorDoQueUm() throws Exception {
-        Banco banco = BancoTestUtil.bancoComNumeroMenorDoQueUm();
+    public void testUpdateComNumeroMenorDoQueUm() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco bancoComNumeroMenorDoQueUm = BancoTestUtil.bancoComNumeroMenorDoQueUm();
+        
+        String inputJson = super.mapToJson(bancoComNumeroMenorDoQueUm);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -124,15 +144,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComNumeroDuplicado() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+    public void testUpdateComNumeroDuplicado() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
+        Banco caixaEconomicaFederal = BancoTestUtil.caixaEconomicaFederal();        
         
-        bancoRepository.save(banco);
+        bancoRepository.save(bancoDoBrasil);        
+        bancoRepository.save(caixaEconomicaFederal);
         
-        String inputJson = super.mapToJson(banco);
+        Long id = caixaEconomicaFederal.getId();
+        
+        String inputJson = super.mapToJson(bancoDoBrasil);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -150,13 +174,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComCnpjInvalido() throws Exception {
-        Banco banco = BancoTestUtil.bancoComCnpjInvalido();
+    public void testUpdateComCnpjInvalido() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoComCnpjInvalido();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco bancoComCnpjInvalido = BancoTestUtil.bancoComCnpjInvalido();
+        
+        String inputJson = super.mapToJson(bancoComCnpjInvalido);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -174,13 +204,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComNomeComMenosDeDoisCaracteres() throws Exception {
-        Banco banco = BancoTestUtil.bancoComNomeComMenosDeDoisCaracteres();
+    public void testUpdateComNomeComMenosDeDoisCaracteres() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco bancoComNomeComMenosDeDoisCaracteres = BancoTestUtil.bancoComNomeComMenosDeDoisCaracteres();
+        
+        String inputJson = super.mapToJson(bancoComNomeComMenosDeDoisCaracteres);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -198,13 +234,19 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComNomeComMaisDeDuzentosECinquentaECincoCaracteres() throws Exception {
-        Banco banco = BancoTestUtil.bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres();
+    public void testUpdateComNomeComMaisDeDuzentosECinquentaECincoCaracteres() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres = BancoTestUtil.bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres();
+        
+        String inputJson = super.mapToJson(bancoComNomeComMaisDeDuzentosECinquentaECincoCaracteres);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -222,13 +264,15 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testSaveComSucesso() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+    public void testUpdateComBancoInexistente() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
         
-        String inputJson = super.mapToJson(banco);
+        bancoRepository.save(bancoDoBrasil);
+        
+        String inputJson = super.mapToJson(bancoDoBrasil);
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
+                .perform(MockMvcRequestBuilders.put(uri, 0)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
@@ -238,10 +282,40 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        Banco savedBanco = super.mapFromJsonObject(content, Banco.class);        
-        banco.setId(savedBanco.getId());
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
-        Assert.assertEquals(HttpStatus.CREATED.value(), status);
-        Assert.assertEquals(banco, savedBanco);
+        Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
     }
+    
+    @Test
+    public void testUpdateComSucesso() throws Exception {
+        Banco bancoDoBrasil = BancoTestUtil.bancoDoBrasil();
+        
+        bancoRepository.save(bancoDoBrasil);
+        
+        Long id = bancoDoBrasil.getId();
+        
+        Banco caixaEconomicaFederal = BancoTestUtil.caixaEconomicaFederal();
+        
+        String inputJson = super.mapToJson(caixaEconomicaFederal);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.put(uri, id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        Banco updatedBanco = super.mapFromJsonObject(content, Banco.class);        
+        caixaEconomicaFederal.setId(updatedBanco.getId());
+        
+        Assert.assertEquals(HttpStatus.OK.value(), status);
+        Assert.assertEquals(caixaEconomicaFederal, updatedBanco);
+    }    
 }

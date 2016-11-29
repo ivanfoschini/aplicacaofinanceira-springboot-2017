@@ -77,8 +77,6 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
-        
-        bancoRepository.delete(banco);
     }
     
     @Test
@@ -98,8 +96,6 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-        
-        bancoRepository.delete(banco);
     }  
     
     @Test
@@ -122,8 +118,6 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
         Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
-        
-        bancoRepository.delete(banco);
     } 
     
     @Test
@@ -148,8 +142,6 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("bancoPossuiAgencias", null, null), errorResponse.getMessage());
-        
-        destroyBancoWithAgencia(bancoWithAgencia, banco);        
     } 
 
     @Test
@@ -203,12 +195,5 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         BancoWithAgencia bancoWithAgencia = new BancoWithAgencia(agencia, banco, cidade, estado);
         
         return bancoWithAgencia;
-    }
-    
-    private void destroyBancoWithAgencia(BancoWithAgencia bancoWithAgencia, Banco banco) {
-        agenciaRepository.delete(bancoWithAgencia.getAgencia());
-        bancoRepository.delete(banco);
-        cidadeRepository.delete(bancoWithAgencia.getCidade());
-        estadoRepository.delete(bancoWithAgencia.getEstado());
     }
 }
