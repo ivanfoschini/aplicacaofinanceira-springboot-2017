@@ -13,6 +13,7 @@ import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.AgenciaTestUtil;
 import aplicacaofinanceira.util.BancoTestUtil;
+import aplicacaofinanceira.util.BancoWithAgencia;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
@@ -127,6 +128,51 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComBancoQuePossuiPeloMenosUmaAgenciaAssociada() throws Exception {
+        BancoWithAgencia bancoWithAgencia = createBancoWithAgencia();
+        
+        Banco banco = bancoWithAgencia.getBanco();
+        
+        Long id = banco.getId();
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.delete(uri, id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString(); 
+        
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoPossuiAgencias", null, null), errorResponse.getMessage());
+        
+        destroyBancoWithAgencia(bancoWithAgencia, banco);        
+    } 
+
+    @Test
+    public void testDeleteComSucesso() throws Exception {
+        Banco banco = BancoTestUtil.bancoDoBrasil();
+        banco.setAgencias(new ArrayList<Agencia>());
+        
+        bancoRepository.save(banco);
+        
+        Long id = banco.getId();
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.delete(uri, id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        
+        Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
+    } 
+    
+    private BancoWithAgencia createBancoWithAgencia() {
         Estado estado = EstadoTestUtil.saoPaulo();
         
         estadoRepository.save(estado);        
@@ -152,48 +198,17 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         banco.setAgencias(new ArrayList<Agencia>());
         banco.getAgencias().add(agencia);
 
-        agenciaRepository.save(agencia);        
+        agenciaRepository.save(agencia); 
         
-        Long id = banco.getId();
+        BancoWithAgencia bancoWithAgencia = new BancoWithAgencia(agencia, banco, cidade, estado);
         
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.delete(uri, id)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
-                .andReturn();
-
-        int status = result.getResponse().getStatus();
-        String content = result.getResponse().getContentAsString(); 
-        
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
-        
-        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoPossuiAgencias", null, null), errorResponse.getMessage());
-        
-        agenciaRepository.delete(agencia);        
-        bancoRepository.delete(banco);
-        cidadeRepository.delete(cidade);
-        estadoRepository.delete(estado);
-    } 
+        return bancoWithAgencia;
+    }
     
-    @Test
-    public void testDeleteComSucesso() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
-        banco.setAgencias(new ArrayList<Agencia>());
-        
-        bancoRepository.save(banco);
-        
-        Long id = banco.getId();
-        
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.delete(uri, id)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
-                .andReturn();
-
-        int status = result.getResponse().getStatus();
-        
-        Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
-    } 
+    private void destroyBancoWithAgencia(BancoWithAgencia bancoWithAgencia, Banco banco) {
+        agenciaRepository.delete(bancoWithAgencia.getAgencia());
+        bancoRepository.delete(banco);
+        cidadeRepository.delete(bancoWithAgencia.getCidade());
+        estadoRepository.delete(bancoWithAgencia.getEstado());
+    }
 }
