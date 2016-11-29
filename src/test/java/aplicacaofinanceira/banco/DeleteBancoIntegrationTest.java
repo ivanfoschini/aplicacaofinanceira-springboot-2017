@@ -19,7 +19,6 @@ import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
 import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
  
     private String uri = BancoTestUtil.BANCOS_URI + BancoTestUtil.ID_COMPLEMENT_URI;
@@ -80,6 +81,27 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
+    public void testDeleteComUsuarioComCredenciaisIncorretas() throws Exception {
+        Banco banco = BancoTestUtil.bancoDoBrasil();
+        
+        bancoRepository.save(banco);
+        
+        Long id = banco.getId();
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.delete(uri, id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword()))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
+        
+        bancoRepository.delete(banco);
+    }  
+    
+    @Test
     public void testDeleteComBancoInexistente() throws Exception {
         Banco banco = BancoTestUtil.bancoDoBrasil();
         
@@ -117,10 +139,6 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(endereco);
-        cidade.setEnderecos(enderecos);
-        
         enderecoRepository.save(endereco);
         
         Banco banco = BancoTestUtil.bancoDoBrasil();                
@@ -130,12 +148,10 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Agencia agencia = AgenciaTestUtil.agencia();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
-        
-        List<Agencia> agencias = new ArrayList<>();
-        agencias.add(agencia);
-        
-        banco.setAgencias(agencias);
-        
+        endereco.setAgencia(agencia);
+        banco.setAgencias(new ArrayList<Agencia>());
+        banco.getAgencias().add(agencia);
+
         agenciaRepository.save(agencia);        
         
         Long id = banco.getId();
@@ -147,23 +163,24 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
                 .andReturn();
 
         int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString(); 
         
-        System.out.println("status:" + status);
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
         
-        estadoRepository.delete(estado);
-        cidadeRepository.delete(cidade);
-        enderecoRepository.delete(endereco);
-        bancoRepository.delete(banco);
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoPossuiAgencias", null, null), errorResponse.getMessage());
+        
         agenciaRepository.delete(agencia);        
-        
-        Assert.assertEquals(true, true);
-        
-//        Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
+        bancoRepository.delete(banco);
+        cidadeRepository.delete(cidade);
+        estadoRepository.delete(estado);
     } 
     
     @Test
     public void testDeleteComSucesso() throws Exception {
         Banco banco = BancoTestUtil.bancoDoBrasil();
+        banco.setAgencias(new ArrayList<Agencia>());
         
         bancoRepository.save(banco);
         

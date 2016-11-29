@@ -4,9 +4,10 @@ import org.springframework.util.Base64Utils;
 
 public class TestUtil {
 
-    public final static String NOT_FOUND_EXCEPTION = "aplicacaofinanceira.exception.NotFoundException";
-    public final static String NOT_UNIQUE_EXCEPTION = "aplicacaofinanceira.exception.NotUniqueException";
-    public final static String VALIDATION_EXCEPTION = "aplicacaofinanceira.exception.ValidationException";
+    public static final String NOT_EMPTY_COLLECTION_EXCEPTION = "aplicacaofinanceira.exception.NotEmptyCollectionException";
+    public static final String NOT_FOUND_EXCEPTION = "aplicacaofinanceira.exception.NotFoundException";
+    public static final String NOT_UNIQUE_EXCEPTION = "aplicacaofinanceira.exception.NotUniqueException";
+    public static final String VALIDATION_EXCEPTION = "aplicacaofinanceira.exception.ValidationException";
     
     public final static int DEFAULT_SUCCESS_LIST_SIZE = 3;
 
