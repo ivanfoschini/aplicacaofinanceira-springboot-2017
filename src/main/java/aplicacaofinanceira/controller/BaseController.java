@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class BaseController {
@@ -28,6 +29,15 @@ public class BaseController {
 
         return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(Exception exception, HttpServletRequest request) {
+        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
+
+        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    } 
     
     @ExceptionHandler(NotEmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleNotEmptyCollectionException(Exception exception, HttpServletRequest request) {

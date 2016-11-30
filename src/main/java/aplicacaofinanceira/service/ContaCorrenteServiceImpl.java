@@ -2,8 +2,10 @@ package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
+import aplicacaofinanceira.model.Agencia;
 import aplicacaofinanceira.model.Conta;
 import aplicacaofinanceira.model.ContaCorrente;
+import aplicacaofinanceira.repository.AgenciaRepository;
 import aplicacaofinanceira.repository.ContaCorrenteRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class ContaCorrenteServiceImpl implements ContaCorrenteService {
 
+    @Autowired
+    private AgenciaRepository agenciaRepository;
+    
     @Autowired
     private ContaCorrenteRepository contaCorrenteRepository;
 
@@ -53,19 +58,21 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public ContaCorrente insert(ContaCorrente contaCorrente) throws NotUniqueException {
+    public ContaCorrente insert(ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException {
+        validateAgencia(contaCorrente);
+        
         if (!isNumberUnique(contaCorrente.getNumero())) {
             throw new NotUniqueException(messageSource.getMessage("contaNumeroDeveSerUnico", null, null));
         }
 
-        ContaCorrente savedContaCorrente = contaCorrenteRepository.save(contaCorrente);
-
-        return savedContaCorrente;
+        return contaCorrenteRepository.save(contaCorrente);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public ContaCorrente update(Long id, ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException {
+        validateAgencia(contaCorrente);
+        
         ContaCorrente contaCorrenteToUpdate = findOne(id);
 
         if (contaCorrenteToUpdate == null) {
@@ -95,5 +102,13 @@ public class ContaCorrenteServiceImpl implements ContaCorrenteService {
         Conta conta = contaCorrenteRepository.findByNumeroAndDifferentId(numero, id);
         
         return conta == null ? true : false;
-    }   
+    } 
+    
+    private void validateAgencia(ContaCorrente contaCorrente) throws NotFoundException {
+        Agencia agencia = agenciaRepository.findOne(contaCorrente.getAgencia().getId());
+        
+        if (agencia == null) {
+            throw new NotFoundException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
+        }
+    }
 }
