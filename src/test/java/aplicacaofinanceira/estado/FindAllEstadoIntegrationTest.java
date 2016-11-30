@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class FindAllEstadoIntegrationTest extends BaseIntegrationTest {
 
     private String uri = EstadoTestUtil.ESTADOS_URI;
@@ -43,8 +45,6 @@ public class FindAllEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
-        
-        estadoRepository.delete(estado);
     }    
     
     @Test
@@ -62,8 +62,6 @@ public class FindAllEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-        
-        estadoRepository.delete(estado);
     }
     
     @Test
@@ -85,11 +83,7 @@ public class FindAllEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();
         
-        List<Object> listSuccessResponse = super.mapFromJsonArray(content);
-        
-        estadoRepository.delete(saoPaulo);
-        estadoRepository.delete(rioDeJaneiro);
-        estadoRepository.delete(minasGerais);
+        List<Object> listSuccessResponse = super.mapFromJsonArray(content);        
         
         Assert.assertEquals(HttpStatus.OK.value(), status);
         Assert.assertTrue(listSuccessResponse.size() == TestUtil.DEFAULT_SUCCESS_LIST_SIZE);        

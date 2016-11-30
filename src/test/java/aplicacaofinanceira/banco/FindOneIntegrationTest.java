@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class FindOneIntegrationTest extends BaseIntegrationTest {
 
     private String uri = BancoTestUtil.BANCOS_URI + TestUtil.ID_COMPLEMENT_URI;
@@ -49,8 +51,6 @@ public class FindOneIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
-        
-        bancoRepository.delete(banco);
     }
     
     @Test
@@ -70,8 +70,6 @@ public class FindOneIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-        
-        bancoRepository.delete(banco);
     }
     
     @Test
@@ -94,8 +92,6 @@ public class FindOneIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
         Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
-        
-        bancoRepository.delete(banco);
     } 
     
     @Test
@@ -120,7 +116,5 @@ public class FindOneIntegrationTest extends BaseIntegrationTest {
         
         Assert.assertEquals(HttpStatus.OK.value(), status);
         Assert.assertEquals(banco, savedBanco);
-        
-        bancoRepository.delete(banco);
     }
 }

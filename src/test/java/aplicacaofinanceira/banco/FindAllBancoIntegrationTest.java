@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
 
     private String uri = BancoTestUtil.BANCOS_URI;
@@ -43,8 +45,6 @@ public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
-        
-        bancoRepository.delete(banco);
     }    
     
     @Test
@@ -62,8 +62,6 @@ public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-        
-        bancoRepository.delete(banco);
     }
     
     @Test
@@ -86,10 +84,6 @@ public class FindAllBancoIntegrationTest extends BaseIntegrationTest {
         String content = result.getResponse().getContentAsString();
         
         List<Object> listSuccessResponse = super.mapFromJsonArray(content);
-        
-        bancoRepository.delete(bancoDoBrasil);
-        bancoRepository.delete(caixaEconomicaFederal);
-        bancoRepository.delete(itau);
         
         Assert.assertEquals(HttpStatus.OK.value(), status);
         Assert.assertTrue(listSuccessResponse.size() == TestUtil.DEFAULT_SUCCESS_LIST_SIZE);        
