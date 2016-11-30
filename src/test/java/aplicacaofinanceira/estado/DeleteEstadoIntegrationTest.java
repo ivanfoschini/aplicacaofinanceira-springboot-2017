@@ -1,23 +1,14 @@
-package aplicacaofinanceira.banco;
+package aplicacaofinanceira.estado;
 
 import aplicacaofinanceira.BaseIntegrationTest;
-import aplicacaofinanceira.model.Agencia;
-import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.model.Cidade;
-import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.model.Estado;
-import aplicacaofinanceira.repository.AgenciaRepository;
-import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.repository.CidadeRepository;
-import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
-import aplicacaofinanceira.util.AgenciaTestUtil;
-import aplicacaofinanceira.util.BancoTestUtil;
-import aplicacaofinanceira.util.BancoWithAgencia;
 import aplicacaofinanceira.util.CidadeTestUtil;
-import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.EstadoTestUtil;
+import aplicacaofinanceira.util.EstadoWithCidade;
 import aplicacaofinanceira.util.TestUtil;
 import java.util.ArrayList;
 import org.junit.Assert;
@@ -33,24 +24,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
+public class DeleteEstadoIntegrationTest extends BaseIntegrationTest {
  
-    private String uri = BancoTestUtil.BANCOS_URI + TestUtil.ID_COMPLEMENT_URI;
-    
-    @Autowired
-    private AgenciaRepository agenciaRepository;
-    
-    @Autowired
-    private BancoRepository bancoRepository;
-    
-    @Autowired
-    private CidadeRepository cidadeRepository;
-    
-    @Autowired
-    private EnderecoRepository enderecoRepository;
+    private String uri = EstadoTestUtil.ESTADOS_URI + TestUtil.ID_COMPLEMENT_URI;
     
     @Autowired
     private EstadoRepository estadoRepository;
+    
+    @Autowired
+    private CidadeRepository cidadeRepository;
     
     @Autowired
     private MessageSource messageSource;
@@ -62,11 +44,11 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComUsuarioNaoAutorizado() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+        Estado estado = EstadoTestUtil.saoPaulo();
         
-        bancoRepository.save(banco);
+        estadoRepository.save(estado);
         
-        Long id = banco.getId();
+        Long id = estado.getId();
         
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.delete(uri, id)
@@ -81,11 +63,11 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComUsuarioComCredenciaisIncorretas() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+        Estado estado = EstadoTestUtil.saoPaulo();
         
-        bancoRepository.save(banco);
+        estadoRepository.save(estado);
         
-        Long id = banco.getId();
+        Long id = estado.getId();
         
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.delete(uri, id)
@@ -99,10 +81,10 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     }  
     
     @Test
-    public void testDeleteComBancoInexistente() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
+    public void testDeleteComEstadoInexistente() throws Exception {
+        Estado estado = EstadoTestUtil.saoPaulo();
         
-        bancoRepository.save(banco);
+        estadoRepository.save(estado);
         
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.delete(uri, 0)
@@ -117,16 +99,16 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
         Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
+        Assert.assertEquals(messageSource.getMessage("estadoNaoEncontrado", null, null), errorResponse.getMessage());
     } 
     
     @Test
-    public void testDeleteComBancoQuePossuiPeloMenosUmaAgenciaAssociada() throws Exception {
-        BancoWithAgencia bancoWithAgencia = createBancoWithAgencia();
+    public void testDeleteComEstadoQuePossuiPeloMenosUmaCidadeAssociada() throws Exception {
+        EstadoWithCidade estadoWithCidade = createEstadoWithCidade();
         
-        Banco banco = bancoWithAgencia.getBanco();
+        Estado estado = estadoWithCidade.getEstado();
         
-        Long id = banco.getId();
+        Long id = estado.getId();
         
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.delete(uri, id)
@@ -141,17 +123,17 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoPossuiAgencias", null, null), errorResponse.getMessage());
+        Assert.assertEquals(messageSource.getMessage("estadoPossuiCidades", null, null), errorResponse.getMessage());
     } 
 
     @Test
     public void testDeleteComSucesso() throws Exception {
-        Banco banco = BancoTestUtil.bancoDoBrasil();
-        banco.setAgencias(new ArrayList<>());
+        Estado estado = EstadoTestUtil.saoPaulo();
+        estado.setCidades(new ArrayList<>());
         
-        bancoRepository.save(banco);
+        estadoRepository.save(estado);
         
-        Long id = banco.getId();
+        Long id = estado.getId();
         
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.delete(uri, id)
@@ -164,36 +146,21 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
     } 
     
-    private BancoWithAgencia createBancoWithAgencia() {
-        Estado estado = EstadoTestUtil.saoPaulo();
+    private EstadoWithCidade createEstadoWithCidade() {
+        Estado estado = EstadoTestUtil.saoPaulo();        
         
         estadoRepository.save(estado);        
         
         Cidade cidade = CidadeTestUtil.saoCarlos();
         cidade.setEstado(estado);        
         
+        estado.setCidades(new ArrayList<>());
+        estado.getCidades().add(cidade);
+        
         cidadeRepository.save(cidade);
         
-        Endereco endereco = EnderecoTestUtil.validEndereco();
-        endereco.setCidade(cidade);
+        EstadoWithCidade estadoWithCidade = new EstadoWithCidade(cidade, estado);
         
-        enderecoRepository.save(endereco);
-        
-        Banco banco = BancoTestUtil.bancoDoBrasil();                
-        
-        bancoRepository.save(banco);        
-        
-        Agencia agencia = AgenciaTestUtil.agencia();
-        agencia.setEndereco(endereco);
-        agencia.setBanco(banco);
-        endereco.setAgencia(agencia);
-        banco.setAgencias(new ArrayList<>());
-        banco.getAgencias().add(agencia);
-
-        agenciaRepository.save(agencia); 
-        
-        BancoWithAgencia bancoWithAgencia = new BancoWithAgencia(agencia, banco, cidade, estado);
-        
-        return bancoWithAgencia;
-    }
+        return estadoWithCidade;
+    }    
 }
