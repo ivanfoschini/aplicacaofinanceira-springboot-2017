@@ -10,7 +10,6 @@ import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -106,7 +105,7 @@ public class CidadeServiceImpl implements CidadeService {
         return cidade != null ? false : true;
     }
     
-    private void validateEstado(Cidade cidade) throws NoSuchMessageException, NotFoundException {
+    private void validateEstado(Cidade cidade) throws NotFoundException {
         Estado estado = estadoRepository.findOne(cidade.getEstado().getId());
         
         if (estado == null) {
