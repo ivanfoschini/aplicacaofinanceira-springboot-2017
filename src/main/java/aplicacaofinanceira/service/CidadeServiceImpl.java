@@ -3,7 +3,9 @@ package aplicacaofinanceira.service;
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
 import aplicacaofinanceira.model.Cidade;
+import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.CidadeRepository;
+import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,6 +20,9 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Autowired
     private CidadeRepository cidadeRepository;
+    
+    @Autowired
+    private EstadoRepository estadoRepository;
 
     @Autowired
     private MessageSource messageSource;
@@ -52,14 +57,18 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Cidade insert(Cidade cidade) throws NotUniqueException {
+    public Cidade insert(Cidade cidade) throws NotFoundException, NotUniqueException {
+        Estado estado = estadoRepository.findOne(cidade.getEstado().getId());
+        
+        if (estado == null) {
+            throw new NotFoundException(messageSource.getMessage("estadoNaoEncontrado", null, null));
+        }
+        
         if (!isNomeUniqueForEstado(cidade.getNome(), cidade.getEstado().getId())) {
             throw new NotUniqueException(messageSource.getMessage("cidadeNomeDeveSerUnicoParaEstado", null, null));
         }
 
-        Cidade savedCidade = cidadeRepository.save(cidade);
-
-        return savedCidade;
+        return cidadeRepository.save(cidade);
     }
 
     @Override
