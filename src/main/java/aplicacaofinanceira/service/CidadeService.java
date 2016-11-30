@@ -14,7 +14,7 @@ public interface CidadeService {
 
     Cidade findOne(Long id) throws NotFoundException;    
     
-    Cidade insert(Cidade cidade) throws NotUniqueException;        
+    Cidade insert(Cidade cidade) throws NotFoundException, NotUniqueException;        
     
     Cidade update(Long id, Cidade cidade) throws NotFoundException, NotUniqueException;
 }
