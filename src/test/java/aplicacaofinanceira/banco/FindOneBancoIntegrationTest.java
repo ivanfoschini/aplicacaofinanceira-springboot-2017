@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FindOneIntegrationTest extends BaseIntegrationTest {
+public class FindOneBancoIntegrationTest extends BaseIntegrationTest {
 
     private String uri = BancoTestUtil.BANCOS_URI + TestUtil.ID_COMPLEMENT_URI;
     
