@@ -9,6 +9,7 @@ import aplicacaofinanceira.repository.EstadoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -58,11 +59,7 @@ public class CidadeServiceImpl implements CidadeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Cidade insert(Cidade cidade) throws NotFoundException, NotUniqueException {
-        Estado estado = estadoRepository.findOne(cidade.getEstado().getId());
-        
-        if (estado == null) {
-            throw new NotFoundException(messageSource.getMessage("estadoNaoEncontrado", null, null));
-        }
+        validateEstado(cidade);
         
         if (!isNomeUniqueForEstado(cidade.getNome(), cidade.getEstado().getId())) {
             throw new NotUniqueException(messageSource.getMessage("cidadeNomeDeveSerUnicoParaEstado", null, null));
@@ -74,6 +71,8 @@ public class CidadeServiceImpl implements CidadeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Cidade update(Long id, Cidade cidade) throws NotFoundException, NotUniqueException {
+        validateEstado(cidade);
+        
         Cidade cidadeToUpdate = findOne(id);
 
         if (cidadeToUpdate == null) {
@@ -101,4 +100,12 @@ public class CidadeServiceImpl implements CidadeService {
 
         return cidade != null ? false : true;
     }
+    
+    private void validateEstado(Cidade cidade) throws NoSuchMessageException, NotFoundException {
+        Estado estado = estadoRepository.findOne(cidade.getEstado().getId());
+        
+        if (estado == null) {
+            throw new NotFoundException(messageSource.getMessage("estadoNaoEncontrado", null, null));
+        }
+    }    
 }
