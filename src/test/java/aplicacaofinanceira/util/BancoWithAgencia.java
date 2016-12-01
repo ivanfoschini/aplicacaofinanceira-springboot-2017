@@ -6,6 +6,7 @@ import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.Estado;
 
 public class BancoWithAgencia {
+    
     private Agencia agencia;
     private Banco banco;
     private Cidade cidade;
