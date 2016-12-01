@@ -6,10 +6,8 @@ import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.model.Estado;
-import aplicacaofinanceira.repository.AgenciaRepository;
 import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.repository.CidadeRepository;
-import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.AgenciaTestUtil;
 import aplicacaofinanceira.util.AgenciaWithEnderecoAndBancoDeserializer;
@@ -18,7 +16,6 @@ import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
-import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,16 +34,10 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
     private String uri = AgenciaTestUtil.AGENCIAS_URI;
     
     @Autowired
-    private AgenciaRepository agenciaRepository;
-    
-    @Autowired
     private BancoRepository bancoRepository;
     
     @Autowired
     private CidadeRepository cidadeRepository;
-    
-    @Autowired
-    private EnderecoRepository enderecoRepository;
     
     @Autowired
     private EstadoRepository estadoRepository;
@@ -118,9 +109,9 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         
         Assert.assertEquals(HttpStatus.CREATED.value(), status);
         Assert.assertNotNull(agenciaWithEnderecoAndBancoDeserializer.getAgenciaId());
+        Assert.assertNotNull(agenciaWithEnderecoAndBancoDeserializer.getEnderecoId());
         Assert.assertEquals(agencia.getNome(), agenciaWithEnderecoAndBancoDeserializer.getAgenciaNome());
-        Assert.assertEquals(agencia.getNumero(), agenciaWithEnderecoAndBancoDeserializer.getAgenciaNumero());
-//        Assert.assertEquals(agencia.getEndereco().getId(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoId());
+        Assert.assertEquals(agencia.getNumero(), agenciaWithEnderecoAndBancoDeserializer.getAgenciaNumero());        
         Assert.assertEquals(agencia.getEndereco().getLogradouro(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoLogradouro());
         Assert.assertEquals(agencia.getEndereco().getNumero(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoNumero());
         Assert.assertEquals(agencia.getEndereco().getComplemento(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoComplemento());
