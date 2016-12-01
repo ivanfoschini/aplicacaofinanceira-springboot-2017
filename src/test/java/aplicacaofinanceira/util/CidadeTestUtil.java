@@ -6,11 +6,27 @@ public class CidadeTestUtil {
     
     public static final String CIDADES_URI = "/api/cidades";
 
-    private static final String CIDADE_NOME = "Sao Carlos";
+    private static final String ARACATUBA_CIDADE_NOME = "Aracatuba";
+    private static final String SAO_CARLOS_CIDADE_NOME = "Sao Carlos";
+    private static final String VOTUPORANGA_CIDADE_NOME = "Votuporanga";
+    
+    public static Cidade aracatuba() {
+        Cidade cidade = new Cidade();
+        cidade.setNome(ARACATUBA_CIDADE_NOME);
+        
+        return cidade;
+    }
     
     public static Cidade saoCarlos() {
         Cidade cidade = new Cidade();
-        cidade.setNome(CIDADE_NOME);
+        cidade.setNome(SAO_CARLOS_CIDADE_NOME);
+        
+        return cidade;
+    }
+    
+    public static Cidade votuporanga() {
+        Cidade cidade = new Cidade();
+        cidade.setNome(VOTUPORANGA_CIDADE_NOME);
         
         return cidade;
     }
