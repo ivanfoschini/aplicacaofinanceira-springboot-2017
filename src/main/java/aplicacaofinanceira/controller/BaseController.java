@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,15 +22,6 @@ public class BaseController {
     @Autowired
     private MessageSource messageSource;
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(Exception exception, HttpServletRequest request) {
-        ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
-
-        Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-    
     @ExceptionHandler(EmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleEmptyCollectionException(Exception exception, HttpServletRequest request) {
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();
@@ -57,8 +47,8 @@ public class BaseController {
         Map<String, Object> responseBody = exceptionAttributes.getExceptionAttributes(messageSource.getMessage("generalBadRequest", null, null), exception, request, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }    
-
+    } 
+    
     @ExceptionHandler(NotEmptyCollectionException.class)
     public ResponseEntity<Map<String, Object>> handleNotEmptyCollectionException(Exception exception, HttpServletRequest request) {
         ExceptionAttributes exceptionAttributes = new DefaultExceptionAttributes();

@@ -2,8 +2,10 @@ package aplicacaofinanceira.service;
 
 import aplicacaofinanceira.exception.NotFoundException;
 import aplicacaofinanceira.exception.NotUniqueException;
+import aplicacaofinanceira.model.Agencia;
 import aplicacaofinanceira.model.Conta;
 import aplicacaofinanceira.model.ContaPoupanca;
+import aplicacaofinanceira.repository.AgenciaRepository;
 import aplicacaofinanceira.repository.ContaPoupancaRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class ContaPoupancaServiceImpl implements ContaPoupancaService {
 
+    @Autowired
+    private AgenciaRepository agenciaRepository;
+    
     @Autowired
     private ContaPoupancaRepository contaPoupancaRepository;
 
@@ -53,19 +58,21 @@ public class ContaPoupancaServiceImpl implements ContaPoupancaService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public ContaPoupanca insert(ContaPoupanca contaPoupanca) throws NotUniqueException {
+    public ContaPoupanca insert(ContaPoupanca contaPoupanca) throws NotFoundException, NotUniqueException {
+        validateAgencia(contaPoupanca);
+        
         if (!isNumberUnique(contaPoupanca.getNumero())) {
             throw new NotUniqueException(messageSource.getMessage("contaNumeroDeveSerUnico", null, null));
         }
 
-        ContaPoupanca savedContaPoupanca = contaPoupancaRepository.save(contaPoupanca);
-
-        return savedContaPoupanca;
+        return contaPoupancaRepository.save(contaPoupanca);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public ContaPoupanca update(Long id, ContaPoupanca contaPoupanca) throws NotFoundException, NotUniqueException {
+        validateAgencia(contaPoupanca);
+        
         ContaPoupanca contaPoupancaToUpdate = findOne(id);
 
         if (contaPoupancaToUpdate == null) {
@@ -97,5 +104,13 @@ public class ContaPoupancaServiceImpl implements ContaPoupancaService {
         Conta conta = contaPoupancaRepository.findByNumeroAndDifferentId(numero, id);
         
         return conta == null ? true : false;
-    }   
+    }
+    
+    private void validateAgencia(ContaPoupanca contaPoupanca) throws NotFoundException {
+        Agencia agencia = agenciaRepository.findOne(contaPoupanca.getAgencia().getId());
+        
+        if (agencia == null) {
+            throw new NotFoundException(messageSource.getMessage("agenciaNaoEncontrada", null, null));
+        }
+    }
 }
