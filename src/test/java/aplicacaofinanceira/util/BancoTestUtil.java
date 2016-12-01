@@ -83,7 +83,7 @@ public class BancoTestUtil {
     
     public static Banco bancoSemCamposObrigatorios() {
         Banco banco = new Banco();
-        banco.setNumero(null);
+        banco.setNumero(0);
         banco.setCnpj(null);
         banco.setNome(null);
         

@@ -96,7 +96,6 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(messageSource.getMessage("bancoCnpjNaoPodeSerNulo", null, null), errorResponse.getMessages().get(0));
         Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(1));
         Assert.assertEquals(messageSource.getMessage("bancoNomeNaoPodeSerNulo", null, null), errorResponse.getMessages().get(2));
-        Assert.assertEquals(messageSource.getMessage("bancoNumeroNaoPodeSerNulo", null, null), errorResponse.getMessages().get(3));
     }
     
     @Test
