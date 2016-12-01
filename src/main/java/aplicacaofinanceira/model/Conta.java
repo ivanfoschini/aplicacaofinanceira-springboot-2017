@@ -55,7 +55,6 @@ public abstract class Conta implements Serializable {
     @NotNull(message = "{contaDataDeAberturaNaoPodeSerNula}")
     @Column(name = "data_de_abertura", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-
     @JsonView({ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private LocalDate dataDeAbertura;
         
