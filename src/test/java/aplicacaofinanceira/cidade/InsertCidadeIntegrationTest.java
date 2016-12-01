@@ -3,6 +3,7 @@ package aplicacaofinanceira.cidade;
 import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.Estado;
+import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.CidadeWithEstado;
@@ -25,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class InsertCidadeIntegrationTest extends BaseIntegrationTest {
 
     private String uri = CidadeTestUtil.CIDADES_URI;
+    
+    @Autowired
+    private CidadeRepository cidadeRepository;
     
     @Autowired
     private EstadoRepository estadoRepository;
@@ -73,6 +77,37 @@ public class InsertCidadeIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
+    }
+    
+    @Test
+    public void testSaveComSucesso() throws Exception {
+        Estado estado = EstadoTestUtil.saoPaulo();        
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);
+        
+        String inputJson = super.mapToJson(cidade);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        CidadeWithEstado cidadeWithEstado = super.mapFromJsonObject(content, CidadeWithEstado.class);                
+        
+        Assert.assertEquals(HttpStatus.CREATED.value(), status);
+        Assert.assertNotNull(cidadeWithEstado.getCidadeId());
+        Assert.assertEquals(cidade.getNome(), cidadeWithEstado.getCidadeNome());
+        Assert.assertEquals(cidade.getEstado().getId(), cidadeWithEstado.getEstadoId());
+        Assert.assertEquals(cidade.getEstado().getNome(), cidadeWithEstado.getEstadoNome());
     }  
     
     @Test
@@ -128,6 +163,37 @@ public class InsertCidadeIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
+    public void testSaveComCidadeCujoNomeJaCorrespondeAoNomeDeOutraCidadeDoEstado() throws Exception {
+        Estado estado = EstadoTestUtil.saoPaulo();        
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);
+        
+        cidadeRepository.save(cidade);
+        
+        String inputJson = super.mapToJson(cidade);
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
+        Assert.assertEquals(messageSource.getMessage("cidadeNomeDeveSerUnicoParaEstado", null, null), errorResponse.getMessage());
+    }  
+    
+    @Test
     public void testSaveComNomeComMenosDeDoisCaracteres() throws Exception {
         Cidade cidade = CidadeTestUtil.cidadeComNomeComMenosDeDoisCaracteres();
         
@@ -173,36 +239,5 @@ public class InsertCidadeIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
         Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
         Assert.assertEquals(messageSource.getMessage("cidadeNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
-    }
-    
-    @Test
-    public void testSaveComSucesso() throws Exception {
-        Estado estado = EstadoTestUtil.saoPaulo();        
-        
-        estadoRepository.save(estado);        
-        
-        Cidade cidade = CidadeTestUtil.saoCarlos();
-        cidade.setEstado(estado);
-        
-        String inputJson = super.mapToJson(cidade);
-
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post(uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-                        .content(inputJson))                
-                .andReturn();
-
-        int status = result.getResponse().getStatus();
-        String content = result.getResponse().getContentAsString();        
-
-        CidadeWithEstado cidadeWithEstado = super.mapFromJsonObject(content, CidadeWithEstado.class);                
-        
-        Assert.assertEquals(HttpStatus.CREATED.value(), status);
-        Assert.assertNotNull(cidadeWithEstado.getCidadeId());
-        Assert.assertEquals(cidade.getNome(), cidadeWithEstado.getCidadeNome());
-        Assert.assertEquals(cidade.getEstado().getId(), cidadeWithEstado.getEstadoId());
-        Assert.assertEquals(cidade.getEstado().getNome(), cidadeWithEstado.getEstadoNome());
-    }    
+    } 
 }
