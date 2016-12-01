@@ -28,7 +28,7 @@ public class Endereco implements Serializable {
     @SequenceGenerator(name="Endereco_Generator", sequenceName="endereco_sequence", allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Endereco_Generator")    
     @Column(name = "endereco_id", nullable = false)    
-    private Integer id;
+    private Long id;
     
     @NotNull(message = "{enderecoLogradouroNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{enderecoLogradouroDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
@@ -63,11 +63,11 @@ public class Endereco implements Serializable {
 
     public Endereco() {}
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
