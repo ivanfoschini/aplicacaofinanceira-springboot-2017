@@ -42,6 +42,7 @@ public class Agencia implements Serializable {
     @Column(name = "numero", nullable = false, unique = true)
     @JsonView({AgenciaViews.AgenciaSimple.class, ContaCorrenteViews.ContaCorrenteSimple.class, ContaPoupancaViews.ContaPoupancaSimple.class})
     private int numero;
+    
     @NotNull(message = "{agenciaNomeNaoPodeSerNulo}")
     @Size(min = 2, max = 255, message = "{agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres}")
     @Column(name = "nome", nullable = false, length = 255)
