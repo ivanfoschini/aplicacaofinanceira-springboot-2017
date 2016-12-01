@@ -32,8 +32,8 @@ public class Banco implements Serializable {
     @Min(value = 1, message = "{bancoNumeroDeveSerMaiorDoQueZero}")
     @Column(name = "numero", nullable = false, unique = true)
     @JsonView(BancoViews.BancoSimple.class)
-    private Integer numero;
-    
+    private int numero;
+   
     @NotNull(message = "{bancoCnpjNaoPodeSerNulo}")
     @Cnpj(message = "{bancoCnpjInvalido}")
     @Column(name = "cnpj", nullable = false, length = 14)    
@@ -56,11 +56,11 @@ public class Banco implements Serializable {
         this.id = id;
     }
 
-    public Integer getNumero() {
+    public int getNumero() {
         return numero;
     }
 
-    public void setNumero(Integer numero) {
+    public void setNumero(int numero) {
         this.numero = numero;
     }
 
