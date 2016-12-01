@@ -14,7 +14,7 @@ public interface ContaPoupancaService {
 
     ContaPoupanca findOne(Long id) throws NotFoundException;    
     
-    ContaPoupanca insert(ContaPoupanca contaPoupanca) throws NotUniqueException;        
+    ContaPoupanca insert(ContaPoupanca contaPoupanca) throws NotFoundException, NotUniqueException;        
     
     ContaPoupanca update(Long id, ContaPoupanca contaPoupanca) throws NotFoundException, NotUniqueException;
 }

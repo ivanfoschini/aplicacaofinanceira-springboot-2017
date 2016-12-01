@@ -14,7 +14,7 @@ public interface ContaCorrenteService {
 
     ContaCorrente findOne(Long id) throws NotFoundException;    
     
-    ContaCorrente insert(ContaCorrente contaCorrente) throws NotUniqueException;        
+    ContaCorrente insert(ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException;        
     
     ContaCorrente update(Long id, ContaCorrente contaCorrente) throws NotFoundException, NotUniqueException;
 }

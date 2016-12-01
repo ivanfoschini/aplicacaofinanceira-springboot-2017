@@ -3,8 +3,10 @@ package aplicacaofinanceira.service;
 import aplicacaofinanceira.exception.EmptyCollectionException;
 import aplicacaofinanceira.exception.NotEmptyCollectionException;
 import aplicacaofinanceira.exception.NotFoundException;
+import aplicacaofinanceira.model.Cidade;
 import aplicacaofinanceira.model.ClientePessoaFisica;
 import aplicacaofinanceira.model.Endereco;
+import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.ClientePessoaFisicaRepository;
 import aplicacaofinanceira.repository.EnderecoRepository;
 import java.util.List;
@@ -19,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaService {
 
+    @Autowired
+    private CidadeRepository cidadeRepository;
+    
     @Autowired
     private ClientePessoaFisicaRepository clientePessoaFisicaRepository;
 
@@ -39,6 +44,10 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
         
         if (!clientePessoaFisica.getCorrentistas().isEmpty()) {
             throw new NotEmptyCollectionException(messageSource.getMessage("clienteEhCorrentista", null, null));
+        }    
+            
+        for (Endereco endereco: clientePessoaFisica.getEnderecos()) {
+            enderecoRepository.delete(endereco);
         }
 
         clientePessoaFisicaRepository.delete(clientePessoaFisica);
@@ -62,7 +71,9 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public ClientePessoaFisica insert(ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException {
+    public ClientePessoaFisica insert(ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException {
+        validateCidades(clientePessoaFisica);
+        
         if (clientePessoaFisica.getEnderecos().isEmpty()) {
             throw new EmptyCollectionException(messageSource.getMessage("clienteSemEnderecos", null, null));
         }
@@ -80,6 +91,8 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException {
+        validateCidades(clientePessoaFisica);
+        
         if (clientePessoaFisica.getEnderecos().isEmpty()) {
             throw new EmptyCollectionException(messageSource.getMessage("clienteSemEnderecos", null, null));
         }
@@ -108,4 +121,14 @@ public class ClientePessoaFisicaServiceImpl implements ClientePessoaFisicaServic
 
         return updatedPessoaFisica;
     }    
+
+    private void validateCidades(ClientePessoaFisica clientePessoaFisica) throws NotFoundException {
+        for (Endereco endereco: clientePessoaFisica.getEnderecos()) {
+            Cidade cidade = cidadeRepository.findOne(endereco.getCidade().getId());
+            
+            if (cidade == null) {
+                throw new NotFoundException(messageSource.getMessage("cidadeNaoEncontrada", null, null));
+            }        
+        }
+    }
 }
