@@ -23,11 +23,11 @@ public class Role implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true)
     private String code;
 
     @NotNull
-    @Column(name = "label", nullable = false)
+    @Column(name = "label", nullable = false, unique = true)
     private String label;
 
     public Role() {}
