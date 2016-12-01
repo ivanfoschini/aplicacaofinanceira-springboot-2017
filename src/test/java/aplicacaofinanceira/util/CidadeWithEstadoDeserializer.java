@@ -1,13 +1,13 @@
 package aplicacaofinanceira.util;
 
-public class CidadeWithEstado {
+public class CidadeWithEstadoDeserializer {
     
     private Long cidadeId;
     private String cidadeNome;
     private Long estadoId;
     private String estadoNome;
 
-    public CidadeWithEstado() {}
+    public CidadeWithEstadoDeserializer() {}
 
     public Long getCidadeId() {
         return cidadeId;

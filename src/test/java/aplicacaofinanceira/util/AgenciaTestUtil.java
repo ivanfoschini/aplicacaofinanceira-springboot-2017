@@ -3,6 +3,8 @@ package aplicacaofinanceira.util;
 import aplicacaofinanceira.model.Agencia;
 
 public class AgenciaTestUtil {
+    
+    public static final String AGENCIAS_URI = "/api/agencias";
 
     private static final String NOME_DA_AGENCIA = "Nome da Agencia";
     

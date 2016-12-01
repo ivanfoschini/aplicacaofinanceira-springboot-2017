@@ -6,7 +6,7 @@ import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
-import aplicacaofinanceira.util.CidadeWithEstado;
+import aplicacaofinanceira.util.CidadeWithEstadoDeserializer;
 import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
@@ -126,13 +126,13 @@ public class UpdateCidadeIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        CidadeWithEstado cidadeWithEstado = super.mapFromJsonObject(content, CidadeWithEstado.class);                
+        CidadeWithEstadoDeserializer cidadeWithEstadoDeserializer = super.mapFromJsonObject(content, CidadeWithEstadoDeserializer.class);                
         
         Assert.assertEquals(HttpStatus.OK.value(), status);
-        Assert.assertNotNull(cidadeWithEstado.getCidadeId());
-        Assert.assertEquals(aracatuba.getNome(), cidadeWithEstado.getCidadeNome());
-        Assert.assertEquals(aracatuba.getEstado().getId(), cidadeWithEstado.getEstadoId());
-        Assert.assertEquals(aracatuba.getEstado().getNome(), cidadeWithEstado.getEstadoNome());
+        Assert.assertNotNull(cidadeWithEstadoDeserializer.getCidadeId());
+        Assert.assertEquals(aracatuba.getNome(), cidadeWithEstadoDeserializer.getCidadeNome());
+        Assert.assertEquals(aracatuba.getEstado().getId(), cidadeWithEstadoDeserializer.getEstadoId());
+        Assert.assertEquals(aracatuba.getEstado().getNome(), cidadeWithEstadoDeserializer.getEstadoNome());
     }  
     
     @Test
