@@ -13,7 +13,7 @@ public interface ClientePessoaFisicaService {
 
     ClientePessoaFisica findOne(Long id) throws NotFoundException;    
     
-    ClientePessoaFisica insert(ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException;        
+    ClientePessoaFisica insert(ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException;        
     
     ClientePessoaFisica update(Long id, ClientePessoaFisica clientePessoaFisica) throws EmptyCollectionException, NotFoundException;    
 }
