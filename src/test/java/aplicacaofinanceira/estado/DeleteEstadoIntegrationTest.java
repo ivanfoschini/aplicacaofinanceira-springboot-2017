@@ -8,7 +8,6 @@ import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.EstadoTestUtil;
-import aplicacaofinanceira.util.EstadoWithCidade;
 import aplicacaofinanceira.util.TestUtil;
 import java.util.ArrayList;
 import org.junit.Assert;
@@ -104,9 +103,7 @@ public class DeleteEstadoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComEstadoQuePossuiPeloMenosUmaCidadeAssociada() throws Exception {
-        EstadoWithCidade estadoWithCidade = createEstadoWithCidade();
-        
-        Estado estado = estadoWithCidade.getEstado();
+        Estado estado = createEstadoWithCidade();
         
         Long id = estado.getId();
         
@@ -146,7 +143,7 @@ public class DeleteEstadoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
     } 
     
-    private EstadoWithCidade createEstadoWithCidade() {
+    private Estado createEstadoWithCidade() {
         Estado estado = EstadoTestUtil.saoPaulo();        
         
         estadoRepository.save(estado);        
@@ -159,8 +156,6 @@ public class DeleteEstadoIntegrationTest extends BaseIntegrationTest {
         
         cidadeRepository.save(cidade);
         
-        EstadoWithCidade estadoWithCidade = new EstadoWithCidade(cidade, estado);
-        
-        return estadoWithCidade;
+        return estado;
     }    
 }

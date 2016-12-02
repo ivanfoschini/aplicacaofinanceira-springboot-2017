@@ -8,7 +8,6 @@ import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
-import aplicacaofinanceira.util.CidadeWithEndereco;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
 import aplicacaofinanceira.util.EstadoTestUtil;
@@ -125,9 +124,7 @@ public class DeleteCidadeIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComCidadeQuePossuiPeloMenosUmEnderecoAssociado() throws Exception {
-        CidadeWithEndereco cidadeWithEndereco = createCidadeWithEndereco();
-        
-        Cidade cidade = cidadeWithEndereco.getCidade();
+        Cidade cidade = createCidadeWithEndereco();
         
         Long id = cidade.getId();
         
@@ -172,7 +169,7 @@ public class DeleteCidadeIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
     } 
     
-    private CidadeWithEndereco createCidadeWithEndereco() {
+    private Cidade createCidadeWithEndereco() {
         Estado estado = EstadoTestUtil.saoPaulo();
         
         estadoRepository.save(estado);        
@@ -190,8 +187,6 @@ public class DeleteCidadeIntegrationTest extends BaseIntegrationTest {
 
         enderecoRepository.save(endereco);
         
-        CidadeWithEndereco cidadeWithEndereco = new CidadeWithEndereco(cidade, endereco, estado);
-        
-        return cidadeWithEndereco;
+        return cidade;
     }    
 }

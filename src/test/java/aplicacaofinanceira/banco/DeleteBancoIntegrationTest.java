@@ -13,7 +13,6 @@ import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.AgenciaTestUtil;
 import aplicacaofinanceira.util.BancoTestUtil;
-import aplicacaofinanceira.util.BancoWithAgencia;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.ErrorResponse;
@@ -122,9 +121,7 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testDeleteComBancoQuePossuiPeloMenosUmaAgenciaAssociada() throws Exception {
-        BancoWithAgencia bancoWithAgencia = createBancoWithAgencia();
-        
-        Banco banco = bancoWithAgencia.getBanco();
+        Banco banco = createBancoWithAgencia();
         
         Long id = banco.getId();
         
@@ -164,7 +161,7 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
     } 
     
-    private BancoWithAgencia createBancoWithAgencia() {
+    private Banco createBancoWithAgencia() {
         Estado estado = EstadoTestUtil.saoPaulo();
         
         estadoRepository.save(estado);        
@@ -191,9 +188,7 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         banco.getAgencias().add(agencia);
 
         agenciaRepository.save(agencia); 
-        
-        BancoWithAgencia bancoWithAgencia = new BancoWithAgencia(agencia, banco, cidade, estado);
-        
-        return bancoWithAgencia;
+
+        return banco;
     }
 }
