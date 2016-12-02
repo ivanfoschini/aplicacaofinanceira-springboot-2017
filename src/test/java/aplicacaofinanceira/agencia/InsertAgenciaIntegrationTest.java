@@ -395,7 +395,7 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        Agencia agencia = AgenciaTestUtil.agencia();
+        Agencia agencia = AgenciaTestUtil.agenciaCentro();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
 
@@ -512,7 +512,7 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        Agencia agencia = AgenciaTestUtil.agencia();
+        Agencia agencia = AgenciaTestUtil.agenciaCentro();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
 
@@ -553,7 +553,7 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        Agencia agencia = AgenciaTestUtil.agencia();
+        Agencia agencia = AgenciaTestUtil.agenciaCentro();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
 

@@ -7,7 +7,9 @@ public class CidadeTestUtil {
     public static final String CIDADES_URI = "/api/cidades";
 
     private static final String ARACATUBA_CIDADE_NOME = "Aracatuba";
+    private static final String RIO_DE_JANEIRO_CIDADE_NOME = "Rio de Janeiro";
     private static final String SAO_CARLOS_CIDADE_NOME = "Sao Carlos";
+    private static final String UBERLANDIA_CIDADE_NOME = "Uberlandia";
     private static final String VOTUPORANGA_CIDADE_NOME = "Votuporanga";
     
     public static Cidade aracatuba() {
@@ -17,9 +19,23 @@ public class CidadeTestUtil {
         return cidade;
     }
     
+    public static Cidade rioDeJaneiro() {
+        Cidade cidade = new Cidade();
+        cidade.setNome(RIO_DE_JANEIRO_CIDADE_NOME);
+        
+        return cidade;
+    }
+    
     public static Cidade saoCarlos() {
         Cidade cidade = new Cidade();
         cidade.setNome(SAO_CARLOS_CIDADE_NOME);
+        
+        return cidade;
+    }
+    
+    public static Cidade uberlandia() {
+        Cidade cidade = new Cidade();
+        cidade.setNome(UBERLANDIA_CIDADE_NOME);
         
         return cidade;
     }

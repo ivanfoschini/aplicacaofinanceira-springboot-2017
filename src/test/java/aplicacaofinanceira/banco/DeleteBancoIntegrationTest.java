@@ -180,7 +180,7 @@ public class DeleteBancoIntegrationTest extends BaseIntegrationTest {
         
         bancoRepository.save(banco);        
         
-        Agencia agencia = AgenciaTestUtil.agencia();
+        Agencia agencia = AgenciaTestUtil.agenciaCentro();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         endereco.setAgencia(agencia);
