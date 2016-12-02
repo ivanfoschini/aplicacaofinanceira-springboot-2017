@@ -16,7 +16,7 @@ import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.AgenciaTestUtil;
 import aplicacaofinanceira.util.BancoTestUtil;
-import aplicacaofinanceira.util.ContaCorrenteUtil;
+import aplicacaofinanceira.util.ContaCorrenteTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
@@ -182,7 +182,7 @@ public class DeleteAgenciaIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        ContaCorrente contaCorrente = ContaCorrenteUtil.contaCorrente();
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
         
         contaCorrenteRepository.save(contaCorrente);
         

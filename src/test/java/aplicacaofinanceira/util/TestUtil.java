@@ -24,4 +24,8 @@ public class TestUtil {
     public static String getFuncionarioAuthorization() {
         return "Basic " + Base64Utils.encodeToString("funcionario:funcionario".getBytes());
     }
+    
+    public static String getAnonimoAuthorization() {
+        return "Basic " + Base64Utils.encodeToString("anonimo:anonimo".getBytes());
+    }
 }
