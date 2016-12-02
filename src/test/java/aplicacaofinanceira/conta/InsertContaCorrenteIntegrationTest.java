@@ -1,6 +1,8 @@
 package aplicacaofinanceira.conta;
 
 import aplicacaofinanceira.BaseIntegrationTest;
+import aplicacaofinanceira.deserializer.ContaCorrenteWithAgenciaDeserializer;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.model.Agencia;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.model.Cidade;
@@ -19,7 +21,6 @@ import aplicacaofinanceira.util.ContaCorrenteTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
-import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,16 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private MessageSource messageSource;
     
+    private Agencia agencia;
+
+    public Agencia getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(Agencia agencia) {
+        this.agencia = agencia;
+    }
+    
     @Before
     public void setUp() {
         super.setUp();
@@ -62,328 +73,213 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void testSaveComUsuarioNaoAutorizado() throws Exception {
-        ContaCorrente contaCorrente = createValidContaCorrente();
-        
-        String inputJson = super.mapToJson(contaCorrente);
+        String inputJson = createValidContaCorrente();
 
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.post(uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAnonimoAuthorization())
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getClienteAuthorization())
                         .content(inputJson))                
                 .andReturn();
 
         int status = result.getResponse().getStatus();
         
-        Assert.assertEquals(HttpStatus.FORBIDDEN.value(), status);
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
     }
 
-//    @Test
-//    public void testSaveComUsuarioComCredenciaisIncorretas() throws Exception {
-//        Agencia agencia = createValidAgencia();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        
-//        Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-//    }
-//        
-//    @Test
-//    public void testSaveComSucesso() throws Exception {
-//        Agencia agencia = createValidAgencia();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        AgenciaWithEnderecoAndBancoDeserializer agenciaWithEnderecoAndBancoDeserializer = super.mapFromJsonObject(content, AgenciaWithEnderecoAndBancoDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.CREATED.value(), status);
-//        Assert.assertNotNull(agenciaWithEnderecoAndBancoDeserializer.getAgenciaId());
-//        Assert.assertNotNull(agenciaWithEnderecoAndBancoDeserializer.getEnderecoId());
-//        Assert.assertEquals(agencia.getNome(), agenciaWithEnderecoAndBancoDeserializer.getAgenciaNome());
-//        Assert.assertEquals(agencia.getNumero(), agenciaWithEnderecoAndBancoDeserializer.getAgenciaNumero());        
-//        Assert.assertEquals(agencia.getEndereco().getLogradouro(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoLogradouro());
-//        Assert.assertEquals(agencia.getEndereco().getNumero(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoNumero());
-//        Assert.assertEquals(agencia.getEndereco().getComplemento(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoComplemento());
-//        Assert.assertEquals(agencia.getEndereco().getBairro(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoBairro());
-//        Assert.assertEquals(agencia.getEndereco().getCep(), agenciaWithEnderecoAndBancoDeserializer.getEnderecoCep());
-//        Assert.assertEquals(agencia.getEndereco().getCidade().getId(), agenciaWithEnderecoAndBancoDeserializer.getCidadeId());
-//        Assert.assertEquals(agencia.getEndereco().getCidade().getNome(), agenciaWithEnderecoAndBancoDeserializer.getCidadeNome());
-//        Assert.assertEquals(agencia.getEndereco().getCidade().getEstado().getId(), agenciaWithEnderecoAndBancoDeserializer.getEstadoId());
-//        Assert.assertEquals(agencia.getEndereco().getCidade().getEstado().getNome(), agenciaWithEnderecoAndBancoDeserializer.getEstadoNome());
-//        Assert.assertEquals(agencia.getBanco().getId(), agenciaWithEnderecoAndBancoDeserializer.getBancoId());
-//        Assert.assertEquals(agencia.getBanco().getNome(), agenciaWithEnderecoAndBancoDeserializer.getBancoNome());
-//    }  
-//    
-//    @Test
-//    public void testSaveComBancoInvalido() throws Exception {
-//        Agencia agencia = createAgenciaWithInvalidBanco();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-//        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponseDeserializer.getMessage());
-//    }
-//    
-//    @Test
-//    public void testSaveComCidadeInvalida() throws Exception {
-//        Agencia agencia = createAgenciaWithInvalidCidade();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-//        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("cidadeNaoEncontrada", null, null), errorResponseDeserializer.getMessage());
-//    }
-//    
-//    @Test
-//    public void testSaveSemCamposObrigatorios() throws Exception {
-//        Agencia agencia = AgenciaTestUtil.agenciaSemCamposObrigatorios();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("enderecoCepNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(0));
-//        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(1));
-//        Assert.assertEquals(messageSource.getMessage("enderecoBairroNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(2));
-//        Assert.assertEquals(messageSource.getMessage("enderecoLogradouroNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(3));
-//        Assert.assertEquals(messageSource.getMessage("agenciaNomeNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(4));
-//        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(5));
-//        Assert.assertEquals(messageSource.getMessage("enderecoNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(6));
-//    }
-//    
-//    @Test
-//    public void testSaveComNumeroMenorDoQueUm() throws Exception {
-//        Agencia agencia = createAgenciaWithNumberLessThanOne();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
-//    
-//    @Test
-//    public void testSaveComNumeroDuplicado() throws Exception {
-//        Agencia agencia = createValidAgencia();
-//        
-//        agenciaRepository.save(agencia);
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null), errorResponseDeserializer.getMessage());
-//    }    
-//    
-//    @Test
-//    public void testSaveComNomeComMenosDeDoisCaracteres() throws Exception {
-//        Agencia agencia = createAgenciaWhichNomeHasLessThanTwoCharacters();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
-//    
-//    @Test
-//    public void testSaveComNomeComMaisDeDuzentosECinquentaECincoCaracteres() throws Exception {
-//        Agencia agencia = createAgenciaWhichNomeHasMoreThan255Characters();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
-//    
-//    @Test
-//    public void testSaveComCepComMenosDeNoveCaracteres() throws Exception {
-//        Agencia agencia = createAgenciaWhichCepHasLessThanNineCharacters();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
-//    
-//    @Test
-//    public void testSaveComCepComMaisDeNoveCaracteres() throws Exception {
-//        Agencia agencia = createAgenciaWhichCepHasMoreThanNineCharacters();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
-//    
-//    @Test
-//    public void testSaveComCepInvalido() throws Exception {
-//        Agencia agencia = createAgenciaWithInvalidCep();
-//        
-//        String inputJson = super.mapToJson(agencia);
-//
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(uri)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-//                        .content(inputJson))                
-//                .andReturn();
-//
-//        int status = result.getResponse().getStatus();
-//        String content = result.getResponse().getContentAsString();        
-//
-//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
-//        
-//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-//        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
-//        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
-//    }
+    @Test
+    public void testSaveComUsuarioComCredenciaisIncorretas() throws Exception {
+        String inputJson = createValidContaCorrente();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
+    }
+        
+    @Test
+    public void testSaveComSucesso() throws Exception {
+        String inputJson = createValidContaCorrente();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ContaCorrenteWithAgenciaDeserializer contaCorrenteWithAgenciaDeserializer = super.mapFromJsonObject(content, ContaCorrenteWithAgenciaDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.CREATED.value(), status);
+        Assert.assertNotNull(contaCorrenteWithAgenciaDeserializer.getContaId());
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO, contaCorrenteWithAgenciaDeserializer.getContaNumero());
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA, contaCorrenteWithAgenciaDeserializer.getContaDataDeAbertura());      
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO, contaCorrenteWithAgenciaDeserializer.getContaSaldo(), 0.0f);
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE, contaCorrenteWithAgenciaDeserializer.getContaLimite(), 0.0f);
+        Assert.assertEquals(agencia.getId(), contaCorrenteWithAgenciaDeserializer.getAgenciaId());
+        Assert.assertEquals(agencia.getNome(), contaCorrenteWithAgenciaDeserializer.getAgenciaNome());
+    }  
     
-    private ContaCorrente createValidContaCorrente() {
+    @Test
+    public void testSaveComAgenciaInvalida() throws Exception {
+        String inputJson = createContaCorrenteWithAgenciaInvalid();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("agenciaNaoEncontrada", null, null), errorResponseDeserializer.getMessage());
+    }    
+    
+    @Test
+    public void testSaveSemCamposObrigatorios() throws Exception {
+        String inputJson = createContaCorrenteWithoutRequiredFields();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("contaDataDeAberturaNaoPodeSerNula", null, null), errorResponseDeserializer.getMessages().get(0));
+        Assert.assertEquals(messageSource.getMessage("contaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(1));
+    }
+    
+    @Test
+    public void testSaveComNumeroMenorDoQueUm() throws Exception {
+        String inputJson = createContaCorrenteWithNumberLessThanOne();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("contaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(0));
+    }
+    
+    @Test
+    public void testSaveComNumeroDuplicado() throws Exception {
+        String inputJson = createValidContaCorrente();
+
+        mockMvc.perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("contaNumeroDeveSerUnico", null, null), errorResponseDeserializer.getMessage());
+    }    
+    
+    @Test
+    public void testSaveComDataInvalida() throws Exception {
+        String inputJson = createContaCorrenteWithInvalidDate();
+
+        mockMvc.perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+        
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+        Assert.assertEquals(TestUtil.HTTP_NOT_READABLE_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("generalBadRequest", null, null), errorResponseDeserializer.getMessage());
+    }
+    
+    @Test
+    public void testSaveComLimiteMenorDoQueZero() throws Exception {
+        String inputJson = createContaCorrenteWithLimiteLessThanZero();
+
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.post(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+                        .content(inputJson))                
+                .andReturn();
+
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();        
+
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
+        
+        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("contaCorrenteLimiteDeveSerMaiorOuIgualAZero", null, null), errorResponseDeserializer.getMessages().get(0));
+    } 
+    
+    private String createValidContaCorrente() {
         Estado estado = EstadoTestUtil.saoPaulo();
         
         estadoRepository.save(estado);        
@@ -400,7 +296,7 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        Agencia agencia = AgenciaTestUtil.agenciaCentro();
+        agencia = AgenciaTestUtil.agenciaCentro();
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
@@ -410,6 +306,156 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
 
         agenciaRepository.save(agencia);        
         
-        return contaCorrente;
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+    }
+
+    private String createContaCorrenteWithAgenciaInvalid() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Banco banco = BancoTestUtil.bancoDoBrasil();                
+        
+        bancoRepository.save(banco);        
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        agencia = AgenciaTestUtil.agenciaCentro();
+        agencia.setEndereco(endereco);
+        agencia.setBanco(banco);
+        
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        
+        contaCorrente.setAgencia(agencia);
+
+        agenciaRepository.save(agencia);        
+        
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": 0 } }";
+    }
+
+    private String createContaCorrenteWithoutRequiredFields() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Banco banco = BancoTestUtil.bancoDoBrasil();                
+        
+        bancoRepository.save(banco);        
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        agencia = AgenciaTestUtil.agenciaCentro();
+        agencia.setEndereco(endereco);
+        agencia.setBanco(banco);
+        
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        
+        contaCorrente.setAgencia(agencia);
+
+        agenciaRepository.save(agencia);        
+        
+        return "{ \"numero\": null, \"dataDeAbertura\": null, \"saldo\": null, \"limite\": null, \"agencia\": { \"id\": " + agencia.getId() + " } }";
+    }
+
+    private String createContaCorrenteWithNumberLessThanOne() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Banco banco = BancoTestUtil.bancoDoBrasil();                
+        
+        bancoRepository.save(banco);        
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        agencia = AgenciaTestUtil.agenciaCentro();
+        agencia.setEndereco(endereco);
+        agencia.setBanco(banco);
+        
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        
+        contaCorrente.setAgencia(agencia);
+
+        agenciaRepository.save(agencia);        
+        
+        return "{ \"numero\": 0, \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+    }
+
+    private String createContaCorrenteWithInvalidDate() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Banco banco = BancoTestUtil.bancoDoBrasil();                
+        
+        bancoRepository.save(banco);        
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        agencia = AgenciaTestUtil.agenciaCentro();
+        agencia.setEndereco(endereco);
+        agencia.setBanco(banco);
+        
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        
+        contaCorrente.setAgencia(agencia);
+
+        agenciaRepository.save(agencia);        
+        
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"2017-02-30 \", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+    }
+
+    private String createContaCorrenteWithLimiteLessThanZero() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Banco banco = BancoTestUtil.bancoDoBrasil();                
+        
+        bancoRepository.save(banco);        
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        agencia = AgenciaTestUtil.agenciaCentro();
+        agencia.setEndereco(endereco);
+        agencia.setBanco(banco);
+        
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        
+        contaCorrente.setAgencia(agencia);
+
+        agenciaRepository.save(agencia);        
+        
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": -1, \"agencia\": { \"id\": " + agencia.getId() + " } }";
     }
 }

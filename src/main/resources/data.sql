@@ -5,10 +5,12 @@ INSERT INTO public.account(account_id, username, password, enabled, credentials_
     VALUES (nextval('account_sequence'), 'funcionario', '$2a$06$eIW6EOPlc0B8djt/LOQT0ewAztx.qIUQHzutuYT9F.cKp8PPjpbHC', true, false, false, false);
 
 INSERT INTO public.account(account_id, username, password, enabled, credentials_expired, expired, locked)
-    VALUES (nextval('account_sequence'), 'anonimo', '$2a$06$nidioeceoTu7uqU5x/CxA.I4q063pxrwky3ETYrnZZj4CX8eYjDlS', true, false, false, false);
+    VALUES (nextval('account_sequence'), 'cliente', '$2a$06$w9msDj/SfL3zOp6/Dn1he.aUQ5Kj/uFqCRsq7g3BM/ZyDfVFrzScm ', true, false, false, false);
 
 INSERT INTO public.role(role_id, code, label) VALUES (nextval('role_sequence'), 'ROLE_ADMIN', 'ADMIN');
 INSERT INTO public.role(role_id, code, label) VALUES (nextval('role_sequence'), 'ROLE_FUNCIONARIO', 'FUNCIONARIO');
+INSERT INTO public.role(role_id, code, label) VALUES (nextval('role_sequence'), 'ROLE_CLIENTE', 'CLIENTE');
 
+INSERT INTO public.account_role(account_id, role_id) VALUES (currval('account_sequence') - 2, currval('role_sequence') - 2);
 INSERT INTO public.account_role(account_id, role_id) VALUES (currval('account_sequence') - 1, currval('role_sequence') - 1);
 INSERT INTO public.account_role(account_id, role_id) VALUES (currval('account_sequence'), currval('role_sequence'));
