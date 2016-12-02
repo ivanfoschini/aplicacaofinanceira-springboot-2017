@@ -4,7 +4,7 @@ import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.util.BancoTestUtil;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -89,13 +89,13 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoCnpjNaoPodeSerNulo", null, null), errorResponse.getMessages().get(0));
-        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(1));
-        Assert.assertEquals(messageSource.getMessage("bancoNomeNaoPodeSerNulo", null, null), errorResponse.getMessages().get(2));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(0));
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponseDeserializer.getMessages().get(1));
+        Assert.assertEquals(messageSource.getMessage("bancoNomeNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(2));
     }
     
     @Test
@@ -115,11 +115,11 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerMaiorDoQueZero", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -141,11 +141,11 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerUnico", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNumeroDeveSerUnico", null, null), errorResponseDeserializer.getMessage());
     }
     
     @Test
@@ -165,11 +165,11 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoCnpjInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -189,11 +189,11 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -213,11 +213,11 @@ public class InsertBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test

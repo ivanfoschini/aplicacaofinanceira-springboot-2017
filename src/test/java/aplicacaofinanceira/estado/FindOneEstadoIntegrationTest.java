@@ -3,7 +3,7 @@ package aplicacaofinanceira.estado;
 import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.EstadoRepository;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
 import org.junit.Assert;
@@ -87,11 +87,11 @@ public class FindOneEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString(); 
         
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("estadoNaoEncontrado", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("estadoNaoEncontrado", null, null), errorResponseDeserializer.getMessage());
     } 
     
     @Test

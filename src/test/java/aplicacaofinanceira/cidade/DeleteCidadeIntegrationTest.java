@@ -9,7 +9,7 @@ import aplicacaofinanceira.repository.EnderecoRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
 import java.util.ArrayList;
@@ -115,11 +115,11 @@ public class DeleteCidadeIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString(); 
         
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("cidadeNaoEncontrada", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("cidadeNaoEncontrada", null, null), errorResponseDeserializer.getMessage());
     } 
     
     @Test
@@ -137,11 +137,11 @@ public class DeleteCidadeIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString(); 
         
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("cidadePossuiEnderecos", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("cidadePossuiEnderecos", null, null), errorResponseDeserializer.getMessage());
     } 
 
     @Test

@@ -3,7 +3,7 @@ package aplicacaofinanceira.estado;
 import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.EstadoRepository;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
 import org.junit.Assert;
@@ -89,11 +89,11 @@ public class InsertEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("estadoNomeNaoPodeSerNulo", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("estadoNomeNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -115,11 +115,11 @@ public class InsertEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveSerUnico", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveSerUnico", null, null), errorResponseDeserializer.getMessage());
     }    
     
     @Test
@@ -139,11 +139,11 @@ public class InsertEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -163,11 +163,11 @@ public class InsertEstadoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("estadoNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test

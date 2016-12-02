@@ -1,4 +1,4 @@
-package aplicacaofinanceira.util;
+package aplicacaofinanceira.deserializer;
 
 public class AgenciaWithEnderecoAndBancoDeserializer {
  

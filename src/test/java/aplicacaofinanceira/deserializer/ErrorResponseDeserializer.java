@@ -1,9 +1,9 @@
-package aplicacaofinanceira.util;
+package aplicacaofinanceira.deserializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ErrorResponse {
+public class ErrorResponseDeserializer {
     
     private String timestamp;
     private int status;

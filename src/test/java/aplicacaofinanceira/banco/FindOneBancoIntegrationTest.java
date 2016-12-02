@@ -4,7 +4,7 @@ import aplicacaofinanceira.BaseIntegrationTest;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.util.BancoTestUtil;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,11 +87,11 @@ public class FindOneBancoIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString(); 
         
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponseDeserializer.getMessage());
     } 
     
     @Test

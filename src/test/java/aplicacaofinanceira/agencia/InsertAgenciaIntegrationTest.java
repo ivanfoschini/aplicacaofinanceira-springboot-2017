@@ -11,11 +11,11 @@ import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.repository.CidadeRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.AgenciaTestUtil;
-import aplicacaofinanceira.util.AgenciaWithEnderecoAndBancoDeserializer;
+import aplicacaofinanceira.deserializer.AgenciaWithEnderecoAndBancoDeserializer;
 import aplicacaofinanceira.util.BancoTestUtil;
 import aplicacaofinanceira.util.CidadeTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
-import aplicacaofinanceira.util.ErrorResponse;
+import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
 import org.junit.Assert;
@@ -147,11 +147,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("bancoNaoEncontrado", null, null), errorResponseDeserializer.getMessage());
     }
     
     @Test
@@ -171,11 +171,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.NOT_FOUND.value(), status);
-        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("cidadeNaoEncontrada", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_FOUND_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("cidadeNaoEncontrada", null, null), errorResponseDeserializer.getMessage());
     }
     
     @Test
@@ -195,17 +195,17 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("enderecoCepNaoPodeSerNulo", null, null), errorResponse.getMessages().get(0));
-        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponse.getMessages().get(1));
-        Assert.assertEquals(messageSource.getMessage("enderecoBairroNaoPodeSerNulo", null, null), errorResponse.getMessages().get(2));
-        Assert.assertEquals(messageSource.getMessage("enderecoLogradouroNaoPodeSerNulo", null, null), errorResponse.getMessages().get(3));
-        Assert.assertEquals(messageSource.getMessage("agenciaNomeNaoPodeSerNulo", null, null), errorResponse.getMessages().get(4));
-        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponse.getMessages().get(5));
-        Assert.assertEquals(messageSource.getMessage("enderecoNumeroDeveSerMaiorDoQueZero", null, null), errorResponse.getMessages().get(6));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("enderecoCepNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(0));
+        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(1));
+        Assert.assertEquals(messageSource.getMessage("enderecoBairroNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(2));
+        Assert.assertEquals(messageSource.getMessage("enderecoLogradouroNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(3));
+        Assert.assertEquals(messageSource.getMessage("agenciaNomeNaoPodeSerNulo", null, null), errorResponseDeserializer.getMessages().get(4));
+        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(5));
+        Assert.assertEquals(messageSource.getMessage("enderecoNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(6));
     }
     
     @Test
@@ -225,11 +225,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerMaiorDoQueZero", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -251,11 +251,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null), errorResponse.getMessage());
+        Assert.assertEquals(TestUtil.NOT_UNIQUE_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("agenciaNumeroDeveSerUnico", null, null), errorResponseDeserializer.getMessage());
     }    
     
     @Test
@@ -275,11 +275,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -299,11 +299,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("agenciaNomeDeveTerEntreDoisEDuzentosECinquentaECincoCaracteres", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -323,11 +323,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -347,11 +347,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     @Test
@@ -371,11 +371,11 @@ public class InsertAgenciaIntegrationTest extends BaseIntegrationTest {
         int status = result.getResponse().getStatus();
         String content = result.getResponse().getContentAsString();        
 
-        ErrorResponse errorResponse = super.mapFromJsonObject(content, ErrorResponse.class);
+        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
         Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
-        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponse.getException());
-        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponse.getMessages().get(0));
+        Assert.assertEquals(TestUtil.VALIDATION_EXCEPTION, errorResponseDeserializer.getException());
+        Assert.assertEquals(messageSource.getMessage("enderecoCepInvalido", null, null), errorResponseDeserializer.getMessages().get(0));
     }
     
     private Agencia createValidAgencia() {
