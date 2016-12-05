@@ -182,7 +182,7 @@ public class DeleteAgenciaIntegrationTest extends BaseIntegrationTest {
         Endereco endereco = EnderecoTestUtil.validEndereco();
         endereco.setCidade(cidade);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
+        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrenteUm();
         
         contaCorrenteRepository.save(contaCorrente);
         

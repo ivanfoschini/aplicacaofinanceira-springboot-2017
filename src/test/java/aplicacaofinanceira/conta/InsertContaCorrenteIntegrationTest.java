@@ -48,9 +48,6 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
     private CidadeRepository cidadeRepository;
     
     @Autowired
-    private ContaCorrenteRepository contaCorrenteRepository;
-    
-    @Autowired
     private EstadoRepository estadoRepository;
     
     @Autowired
@@ -124,10 +121,10 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         
         Assert.assertEquals(HttpStatus.CREATED.value(), status);
         Assert.assertNotNull(contaCorrenteWithAgenciaDeserializer.getContaId());
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO, contaCorrenteWithAgenciaDeserializer.getContaNumero());
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA, contaCorrenteWithAgenciaDeserializer.getContaDataDeAbertura());      
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO, contaCorrenteWithAgenciaDeserializer.getContaSaldo(), 0.0f);
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE, contaCorrenteWithAgenciaDeserializer.getContaLimite(), 0.0f);
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM, contaCorrenteWithAgenciaDeserializer.getContaNumero());
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM, contaCorrenteWithAgenciaDeserializer.getContaDataDeAbertura());      
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM, contaCorrenteWithAgenciaDeserializer.getContaSaldo(), 0.0f);
+        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM, contaCorrenteWithAgenciaDeserializer.getContaLimite(), 0.0f);
         Assert.assertEquals(agencia.getId(), contaCorrenteWithAgenciaDeserializer.getAgenciaId());
         Assert.assertEquals(agencia.getNome(), contaCorrenteWithAgenciaDeserializer.getAgenciaNome());
     }  
@@ -300,13 +297,9 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
-        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
     }
 
     private String createContaCorrenteWithAgenciaInvalid() {
@@ -330,13 +323,9 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
-        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": 0 } }";
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM + ", \"agencia\": { \"id\": 0 } }";
     }
 
     private String createContaCorrenteWithoutRequiredFields() {
@@ -360,10 +349,6 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
         return "{ \"numero\": null, \"dataDeAbertura\": null, \"saldo\": null, \"limite\": null, \"agencia\": { \"id\": " + agencia.getId() + " } }";
@@ -390,13 +375,9 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
-        return "{ \"numero\": 0, \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+        return "{ \"numero\": 0, \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
     }
 
     private String createContaCorrenteWithInvalidDate() {
@@ -420,13 +401,9 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
-        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"2017-02-30 \", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM + ", \"dataDeAbertura\": \"2017-02-30 \", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
     }
 
     private String createContaCorrenteWithLimiteLessThanZero() {
@@ -450,12 +427,8 @@ public class InsertContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agencia.setEndereco(endereco);
         agencia.setBanco(banco);
         
-        ContaCorrente contaCorrente = ContaCorrenteTestUtil.contaCorrente();
-        
-        contaCorrente.setAgencia(agencia);
-
         agenciaRepository.save(agencia);        
         
-        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO + ", \"limite\": -1, \"agencia\": { \"id\": " + agencia.getId() + " } }";
+        return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": -1, \"agencia\": { \"id\": " + agencia.getId() + " } }";
     }
 }
