@@ -1,25 +1,33 @@
 package aplicacaofinanceira.conta;
 
 import aplicacaofinanceira.BaseIntegrationTest;
-import aplicacaofinanceira.deserializer.ContaCorrenteDeserializer;
 import aplicacaofinanceira.deserializer.ContaCorrenteWithAgenciaDeserializer;
 import aplicacaofinanceira.deserializer.ErrorResponseDeserializer;
 import aplicacaofinanceira.model.Agencia;
 import aplicacaofinanceira.model.Banco;
 import aplicacaofinanceira.model.Cidade;
+import aplicacaofinanceira.model.ClientePessoaFisica;
+import aplicacaofinanceira.model.ContaCorrente;
+import aplicacaofinanceira.model.Correntista;
+import aplicacaofinanceira.model.CorrentistaPK;
 import aplicacaofinanceira.model.Endereco;
 import aplicacaofinanceira.model.Estado;
 import aplicacaofinanceira.repository.AgenciaRepository;
 import aplicacaofinanceira.repository.BancoRepository;
 import aplicacaofinanceira.repository.CidadeRepository;
+import aplicacaofinanceira.repository.ClientePessoaFisicaRepository;
+import aplicacaofinanceira.repository.ContaCorrenteRepository;
+import aplicacaofinanceira.repository.CorrentistaRepository;
 import aplicacaofinanceira.repository.EstadoRepository;
 import aplicacaofinanceira.util.AgenciaTestUtil;
 import aplicacaofinanceira.util.BancoTestUtil;
 import aplicacaofinanceira.util.CidadeTestUtil;
+import aplicacaofinanceira.util.ClientePessoaFisicaTestUtil;
 import aplicacaofinanceira.util.ContaCorrenteTestUtil;
 import aplicacaofinanceira.util.EnderecoTestUtil;
 import aplicacaofinanceira.util.EstadoTestUtil;
 import aplicacaofinanceira.util.TestUtil;
+import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +41,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
-
-    private String getUri = ContaCorrenteTestUtil.CONTAS_CORRENTES_URI + TestUtil.ID_COMPLEMENT_URI;
+public class DeleteContaCorrenteIntegrationTest extends BaseIntegrationTest {
+ 
+    private String deleteUri = ContaCorrenteTestUtil.CONTAS_CORRENTES_URI + TestUtil.ID_COMPLEMENT_URI;
     private String postUri = ContaCorrenteTestUtil.CONTAS_CORRENTES_URI;
     
     @Autowired
@@ -46,6 +54,15 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
     
     @Autowired
     private CidadeRepository cidadeRepository;
+    
+    @Autowired
+    private ClientePessoaFisicaRepository clientePessoaFisicaRepository;
+    
+    @Autowired
+    private ContaCorrenteRepository contaCorrenteRepository;
+    
+    @Autowired
+    private CorrentistaRepository correntistaRepository;
     
     @Autowired
     private EstadoRepository estadoRepository;
@@ -59,8 +76,8 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
     }
     
     @Test
-    public void testFindOneComUsuarioNaoAutorizado() throws Exception {
-        String inputJson = createContaCorrenteUmValida();
+    public void testDeleteComUsuarioNaoAutorizado() throws Exception {
+        String inputJson = createContaCorrenteValida();
         
         MvcResult postResult = mockMvc
                 .perform(MockMvcRequestBuilders.post(postUri)
@@ -76,20 +93,20 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
         
         Long id = contaCorrenteWithAgenciaDeserializer.getContaId();
         
-        MvcResult getResult = mockMvc
-                .perform(MockMvcRequestBuilders.get(getUri, id)
+        MvcResult deleteResult = mockMvc
+                .perform(MockMvcRequestBuilders.delete(deleteUri, id)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getClienteAuthorization()))                
                 .andReturn();
 
-        int status = getResult.getResponse().getStatus();
+        int status = deleteResult.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
     }
     
     @Test
-    public void testFindAllComUsuarioComCredenciaisIncorretas() throws Exception {
-        String inputJson = createContaCorrenteUmValida();
+    public void testDeleteComUsuarioComCredenciaisIncorretas() throws Exception {
+        String inputJson = createContaCorrenteValida();
         
         MvcResult postResult = mockMvc
                 .perform(MockMvcRequestBuilders.post(postUri)
@@ -105,20 +122,20 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
         
         Long id = contaCorrenteWithAgenciaDeserializer.getContaId();
         
-        MvcResult getResult = mockMvc
-                .perform(MockMvcRequestBuilders.get(getUri, id)
+        MvcResult deleteResult = mockMvc
+                .perform(MockMvcRequestBuilders.delete(deleteUri, id)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorizationWithWrongPassword()))                
                 .andReturn();
 
-        int status = getResult.getResponse().getStatus();
+        int status = deleteResult.getResponse().getStatus();
         
         Assert.assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
-    }
+    }  
     
     @Test
-    public void testFindOneComContaCorrenteInexistente() throws Exception {
-        String inputJson = createContaCorrenteUmValida();
+    public void testDeleteComContaCorrenteInexistente() throws Exception {
+        String inputJson = createContaCorrenteValida();
         
         mockMvc
                 .perform(MockMvcRequestBuilders.post(postUri)
@@ -128,14 +145,14 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
                         .content(inputJson))                
                 .andReturn();
         
-        MvcResult getResult = mockMvc
-                .perform(MockMvcRequestBuilders.get(getUri, 0)
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.delete(deleteUri, 0)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
                 .andReturn();
 
-        int status = getResult.getResponse().getStatus();
-        String content = getResult.getResponse().getContentAsString(); 
+        int status = result.getResponse().getStatus();
+        String content = result.getResponse().getContentAsString();                
         
         ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(content, ErrorResponseDeserializer.class);
         
@@ -144,44 +161,106 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(messageSource.getMessage("contaNaoEncontrada", null, null), errorResponseDeserializer.getMessage());
     } 
     
+//    @Test
+//    public void testDeleteComContaCorrenteQuePossuiPeloMenosUmaCorrentista() throws Exception {
+//        ClientePessoaFisica clientePessoaFisica = createClientePessoaFisicaValido();
+//        
+//        String inputJsonContaCorrente = createContaCorrenteValida();
+//        
+//        MvcResult postResult = mockMvc
+//                .perform(MockMvcRequestBuilders.post(postUri)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
+//                        .content(inputJsonContaCorrente))                
+//                .andReturn();
+//        
+//        String contentPostResult = postResult.getResponse().getContentAsString();        
+//
+//        ContaCorrenteWithAgenciaDeserializer contaCorrenteWithAgenciaDeserializer = super.mapFromJsonObject(contentPostResult, ContaCorrenteWithAgenciaDeserializer.class);
+//        
+//        Long clienteId = clientePessoaFisica.getId();
+//        Long id = contaCorrenteWithAgenciaDeserializer.getContaId();
+//        
+//        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);        
+//        contaCorrente.setCorrentistas(new ArrayList<>());        
+//        
+//        Correntista correntista = new Correntista(new CorrentistaPK(id, clienteId), true, contaCorrente, clientePessoaFisica); 
+//        correntista.setConta(contaCorrente);
+//        
+//        correntistaRepository.save(correntista);
+//        
+//        MvcResult deleteResult = mockMvc
+//                .perform(MockMvcRequestBuilders.delete(deleteUri, id)
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
+//                .andReturn();
+//
+//        int status = deleteResult.getResponse().getStatus();
+//        String contentDeleteResult = deleteResult.getResponse().getContentAsString(); 
+//        
+//        ErrorResponseDeserializer errorResponseDeserializer = super.mapFromJsonObject(contentDeleteResult, ErrorResponseDeserializer.class);
+//        
+//        Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), status);
+//        Assert.assertEquals(TestUtil.NOT_EMPTY_COLLECTION_EXCEPTION, errorResponseDeserializer.getException());
+//        Assert.assertEquals(messageSource.getMessage("estadoPossuiCidades", null, null), errorResponseDeserializer.getMessage());
+//    } 
+
     @Test
-    public void testFindOneComSucesso() throws Exception {
-        String inputJson = createContaCorrenteUmValida();
+    public void testDeleteComSucesso() throws Exception {
+        String inputJsonContaCorrente = createContaCorrenteValida();
         
         MvcResult postResult = mockMvc
                 .perform(MockMvcRequestBuilders.post(postUri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization())
-                        .content(inputJson))                
+                        .content(inputJsonContaCorrente))                
                 .andReturn();
         
-        String postContent = postResult.getResponse().getContentAsString();        
+        String contentPostResult = postResult.getResponse().getContentAsString();        
 
-        ContaCorrenteWithAgenciaDeserializer contaCorrenteWithAgenciaDeserializer = super.mapFromJsonObject(postContent, ContaCorrenteWithAgenciaDeserializer.class);
+        ContaCorrenteWithAgenciaDeserializer contaCorrenteWithAgenciaDeserializer = super.mapFromJsonObject(contentPostResult, ContaCorrenteWithAgenciaDeserializer.class);
         
         Long id = contaCorrenteWithAgenciaDeserializer.getContaId();
         
-        MvcResult getResult = mockMvc
-                .perform(MockMvcRequestBuilders.get(getUri, id)
+        ContaCorrente contaCorrente = contaCorrenteRepository.findOne(id);        
+        contaCorrente.setCorrentistas(new ArrayList<>());        
+        
+        MvcResult deleteResult = mockMvc
+                .perform(MockMvcRequestBuilders.delete(deleteUri, id)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, TestUtil.getAdminAuthorization()))                
                 .andReturn();
 
-        int status = getResult.getResponse().getStatus();
-        String getContent = getResult.getResponse().getContentAsString();        
-
-        ContaCorrenteDeserializer contaCorrenteDeserializer = super.mapFromJsonObject(getContent, ContaCorrenteDeserializer.class);        
+        int status = deleteResult.getResponse().getStatus();
         
-        Assert.assertEquals(HttpStatus.OK.value(), status);
-        Assert.assertEquals(id, contaCorrenteDeserializer.getId());
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM, contaCorrenteDeserializer.getNumero());
-        Assert.assertEquals(Float.valueOf(ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM), Float.valueOf(contaCorrenteDeserializer.getSaldo()));
-        Assert.assertEquals(ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM, contaCorrenteDeserializer.getDataDeAbertura());
-        Assert.assertEquals(Float.valueOf(ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM), Float.valueOf(contaCorrenteDeserializer.getLimite()));
+        Assert.assertEquals(HttpStatus.NO_CONTENT.value(), status);        
+    } 
+    
+    private ClientePessoaFisica createClientePessoaFisicaValido() {
+        Estado estado = EstadoTestUtil.saoPaulo();
+        
+        estadoRepository.save(estado);        
+        
+        Cidade cidade = CidadeTestUtil.saoCarlos();
+        cidade.setEstado(estado);        
+        
+        cidadeRepository.save(cidade);
+        
+        Endereco endereco = EnderecoTestUtil.validEndereco();
+        endereco.setCidade(cidade);
+        
+        ClientePessoaFisica clientePessoaFisica = ClientePessoaFisicaTestUtil.clientePessoaFisica();
+        clientePessoaFisica.setEnderecos(new ArrayList<>());
+        clientePessoaFisica.getEnderecos().add(endereco);
+        
+        clientePessoaFisicaRepository.save(clientePessoaFisica);
+        
+        return clientePessoaFisica;
     }
     
-    private String createContaCorrenteUmValida() {
+    private String createContaCorrenteValida() {
         Estado estado = EstadoTestUtil.saoPaulo();
         
         estadoRepository.save(estado);        
@@ -205,5 +284,5 @@ public class FindOneContaCorrenteIntegrationTest extends BaseIntegrationTest {
         agenciaRepository.save(agencia);        
         
         return "{ \"numero\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_NUMERO_UM + ", \"dataDeAbertura\": \"" + ContaCorrenteTestUtil.CONTA_CORRENTE_DATA_DE_ABERTURA_UM + "\", \"saldo\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_SALDO_UM + ", \"limite\": " + ContaCorrenteTestUtil.CONTA_CORRENTE_LIMITE_UM + ", \"agencia\": { \"id\": " + agencia.getId() + " } }";
-    }
+    }    
 }
